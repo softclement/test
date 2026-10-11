@@ -330,7 +330,7 @@ body:not(.ctOn) #tC{display:none}
 <div class="acts"><button id="fcPrint" type="button">அச்சிடு / PDF</button><button id="fcClose" type="button">மூடு</button></div>
 </div></div></div>
 <script>
-var SCRIPT_URL="https://script.google.com/macros/s/AKfycbwQYgBjSGOEVX5QlNNC-p6AnnLWWr2TcNKQcL4onNK_pm_S3UNnwW2rnrShJx8DGLrW6A/exec";
+var SCRIPT_URL="https://script.google.com/macros/s/AKfycbwtrQjfJNn3JgFND_jMYgwZjGu48x_ilLU8Zj0DeSN_HUzBnAIjylCXXGRx0vBK4yCLwg/exec";
 var F=[["name","முழு பெயர்","text"],["gender","பாலினம்","sel",["ஆண்","பெண்","மற்றவை"]],["rel","குடும்பத் தலைவருடன் உறவு முறை","combo"],["status","உறுப்பினர் நிலை","sel",["உயிருடன்","இறந்தவர்"]],["dDate","இறந்த தேதி","date"],["dob","பிறந்த தேதி","date"],["pob","பிறந்த இடம்","text"],["bDate","திருமுழுக்கு பெற்ற தேதி","date"],["bPlace","திருமுழுக்கு பெற்ற பங்கு / இடம்","text"],["cDate","புது நன்மை பெற்ற தேதி","date"],["cPlace","புது நன்மை பெற்ற பங்கு / இடம்","text"],["kDate","உறுதி பூசுதல் பெற்ற தேதி","date"],["kPlace","உறுதி பூசுதல் பெற்ற பங்கு / இடம்","text"],["marital","திருமண நிலை","sel",["திருமணமாகாதவர்","திருமணமானவர்","விதவை / மனைவியை இழந்தவர்","துறவறம்"]],["mDate","திருமண / துறவற தேதி","date"],["mPlace","திருமணம் / துறவற இடம்","text"]];
 var REL=[["Mother","அம்மா"],["Father","அப்பா"],["Brother","சகோதரன்"],["Sister","சகோதரி"],["Son","மகன்"],["Daughter","மகள்"],["Husband","கணவர்"],["Wife","மனைவி"],["Grandfather","தாத்தா"],["Grandmother","பாட்டி"],["Grandson","பேரன்"],["Granddaughter","பேத்தி"],["Father-in-law","மாமனார்"],["Mother-in-law","மாமியார்"],["Brother-in-law","மைத்துனர்"],["Sister-in-law","மைத்துனி"]];
 function fillRel(){$("relList").innerHTML=REL.map(function(r){return'<option value="'+r[0]+'" label="'+(LANG==="en"?r[0]:r[1])+'"></option>'}).join("")}
