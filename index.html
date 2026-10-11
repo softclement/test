@@ -47,7 +47,8 @@ button.link{border:0;background:none;padding:4px 0;color:var(--err)}
 .list-item:last-child{border:0}
 .list-item b{display:block}
 .mut{color:var(--mut);font-size:.88rem}
-.wide{overflow-x:auto}
+.wide{overflow-x:auto;scrollbar-width:auto;scrollbar-color:var(--mut) var(--line);padding-bottom:4px}.wide::-webkit-scrollbar{height:12px}.wide::-webkit-scrollbar-track{background:var(--line);border-radius:6px}.wide::-webkit-scrollbar-thumb{background:var(--mut);border-radius:6px}
+.dt th.sortable{cursor:pointer;user-select:none}.dt th .si{opacity:.5;font-size:.85em;margin-left:5px}.dt th .sa{margin-left:5px;color:var(--pri)}.dt th.sortable:hover{color:var(--ink)}
 .wrap.wd{max-width:1100px}
 .langbar{display:flex;justify-content:flex-end;align-items:center;gap:6px}
 .langbar button{padding:4px 12px;font-size:.85rem}
@@ -96,6 +97,27 @@ body.adminOnly #tF,body.adminOnly #tL{display:none}
 .spin{width:38px;height:38px;border:4px solid var(--line);border-top-color:var(--pri);border-radius:50%;margin:0 auto 12px;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media print{.wait{display:none!important}.tabs,.noprint,#vF,#vL,#aRec,#aLock,h1,.wrap>.sub,button{display:none!important}.wrap{max-width:none}.card,.kpi{break-inside:avoid}body{background:#fff}}
+.vfy{position:fixed;top:0;left:0;right:0;bottom:0;z-index:9000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);padding:12px}
+.vfy.on{display:flex}
+.vfy .bx{background:var(--card);color:var(--ink);border-radius:14px;padding:18px 18px 14px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.vfy .bx h2{margin:0 0 8px}
+.vfy .mb{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:8px 0;background:var(--mbg)}
+.vfy .mb h3{margin:0 0 4px;font-size:.95rem;color:var(--pri)}
+.vfy .kv{display:grid;grid-template-columns:minmax(96px,38%) 1fr;gap:2px 10px;font-size:.88rem;margin:2px 0}
+.vfy .kv .k{color:var(--mut)}.vfy .kv .v{word-break:break-word}
+.vfy .acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:12px}
+@media print{.vfy{display:none!important}}
+.fcard{border:2px solid var(--pri);border-radius:12px;overflow:hidden;background:var(--card);color:var(--ink)}
+.fcard .fch{background:var(--pri);color:var(--on);padding:12px 14px}.fcard .fct{font-size:1.2rem;font-weight:700}.fcard .fcs{opacity:.9;font-size:.85rem}
+.fcard .fcv{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:12px;background:rgba(255,255,255,.22);font-size:.8rem}
+.fcard .fcb{padding:12px 14px}.fcard .fm{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:8px 0}.fcard .fm h3{margin:0 0 4px;font-size:.95rem;color:var(--pri)}
+.fcard .fk{display:grid;grid-template-columns:minmax(96px,38%) 1fr;gap:2px 10px;font-size:.88rem;margin:2px 0}.fcard .fk .k{color:var(--mut)}.fcard .fk .v{word-break:break-word}
+#fcm .bx{max-width:620px}#fcm label{display:block;margin-top:10px}#fcm input{width:100%}
+@media print{body.cardprint .wrap{display:none!important}body.cardprint #fcm{position:static;display:block!important;background:none;padding:0}body.cardprint #fcm .bx{box-shadow:none;max-height:none;overflow:visible;max-width:none;padding:0}.fcard .fch{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+body:not(.ctOn) #tC{display:none}
+.mth{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.78rem;margin:2px;border:1px solid var(--line)}
+.mth.paid{background:rgba(31,122,77,.18)}.mth.partial{background:rgba(184,137,43,.28)}.mth.due{background:rgba(179,38,30,.16)}.mth.adv{background:rgba(31,78,121,.18)}
+@media print{body.rcprint .wrap{display:none!important}body.rcprint #rcm{position:static;display:block!important;background:none;padding:0}body.rcprint #rcm .bx{box-shadow:none;max-height:none;overflow:visible;max-width:none;padding:0}.rcard .fch{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 </head>
 <body class="gateMode">
@@ -104,6 +126,7 @@ body.adminOnly #tF,body.adminOnly #tL{display:none}
 <h1 id="hGate">Sentharapatti Parish Family</h1>
 <h1 id="hMain">எங்கள் பங்கு – குடும்பத் தகவல் பதிவு</h1>
 <p class="sub" id="subMain">உங்கள் குடும்பத்தின் விவரங்களை நிரப்பி சமர்ப்பிக்கவும்.</p>
+<div id="cardView" class="hide"><div id="cvBody"></div><div class="acts noprint" style="margin-top:12px"><button id="cvPrint" type="button">அச்சிடு / PDF</button></div></div>
 <div id="gate" class="card">
 <h2>தன்னார்வலர் உள்நுழைவு</h2>
 <p class="mut" style="margin:0 0 4px">அலைபேசி எண்ணையும் கடவுச்சொல்லையும் உள்ளிட்டு உள்நுழையவும். கணக்கு இல்லையெனில் நிர்வாகியைத் தொடர்பு கொள்ளவும்.</p>
@@ -128,6 +151,7 @@ body.adminOnly #tF,body.adminOnly #tL{display:none}
 <button id="tF" class="on" type="button">புதிய பதிவு</button>
 <button id="tL" type="button">என் பதிவுகள் (<span id="cnt">0</span>)</button>
 <button id="tA" type="button">நிர்வாகி</button>
+<button id="tC" type="button">💰 பங்களிப்புகள்</button>
 </div>
 
 <div id="vF">
@@ -168,8 +192,8 @@ body.adminOnly #tF,body.adminOnly #tL{display:none}
 <button id="aBack" class="link" type="button" style="margin-top:10px;color:var(--mut)">← தன்னார்வலர் உள்நுழைவு</button>
 </div>
 <div id="aBody" class="hide">
-<div class="tabs noprint wrapt"><button id="sA" class="on" type="button">பதிவுகள்</button><button id="sD" type="button">டாஷ்போர்டு</button><button id="sV" type="button">தன்னார்வலர்கள்</button><button id="sN" type="button">அன்பியங்கள்</button><button id="sB" type="button">நீக்கப்பட்டவை</button><button id="sC" type="button">மாற்றப் பதிவு</button><button id="alogout" type="button">வெளியேறு</button></div>
-<div id="aRec">
+<div class="tabs noprint wrapt"><button id="sE" class="on" type="button">இன்றைய நிகழ்வுகள்</button><button id="sA" type="button">பதிவுகள்</button><button id="sD" type="button">டாஷ்போர்டு</button><button id="sH" type="button">உள்நுழைவு வரலாறு</button><button id="sV" type="button">தன்னார்வலர்கள்</button><button id="sN" type="button">அன்பியங்கள்</button><button id="sB" type="button">நீக்கப்பட்டவை</button><button id="sC" type="button">மாற்றப் பதிவு</button><button id="alogout" type="button">வெளியேறு</button></div>
+<div id="aRec" class="hide">
 <div class="card">
 <h2>அனைத்துப் பதிவுகள் (<span id="acnt">0</span>)</h2>
 <div id="aBy" class="mut" style="margin:8px 0"></div>
@@ -196,12 +220,19 @@ body.adminOnly #tF,body.adminOnly #tL{display:none}
 <label for="vMob">அலைபேசி எண்</label><input id="vMob" type="tel" inputmode="numeric" autocomplete="off">
 <label for="vPw">கடவுச்சொல்</label>
 <input id="vPw" type="text" autocomplete="off">
+<label for="vCt">பங்களிப்புகள் அணுகல்</label>
+<select id="vCt"></select>
 <button id="vAdd" class="p" type="button" style="width:100%;margin-top:12px">தன்னார்வலரைச் சேர்</button>
 <p class="mut">கடவுச்சொல் இங்கே ஒரு முறை மட்டுமே தெரியும்; சேர்த்த பின் தன்னார்வலரிடம் தெரிவிக்கவும். மறந்துவிட்டால் "கடவுச்சொல் மாற்று" மூலம் புதியதை அமைக்கலாம்.</p>
 </details>
 <div id="vList"></div></div>
-<div class="card"><div class="hd"><h2>உள்நுழைவு வரலாறு</h2><span class="tools"><select id="vlWho" aria-label="உள்நுழைவு வரலாறு"><option value="">அனைவரும்</option><option value="admin">நிர்வாகி</option><option value="vol">தன்னார்வலர்கள்</option></select><button id="vlCsv" type="button" class="sm">CSV</button></span></div><div id="vLog"></div></div>
+
 </div>
+<div id="aHist" class="hide"><div class="card"><div class="hd"><h2>உள்நுழைவு வரலாறு</h2><span class="tools"><select id="vlWho" aria-label="உள்நுழைவு வரலாறு"><option value="">அனைவரும்</option><option value="admin">நிர்வாகி</option><option value="vol">தன்னார்வலர்கள்</option></select><button id="lRef" type="button" class="sm">⟳ புதுப்பி</button><button id="vlCsv" type="button" class="sm">CSV</button></span></div>
+<p class="mut" style="margin:0 0 8px">நேரம் / அலைபேசி / பெயர் தலைப்பைத் தொட்டால் வரிசைப்படுத்தலாம். சமீபத்திய 1000 பதிவுகள் வரை.</p>
+<div id="vLog"></div></div></div>
+<div id="aToday"><div class="card"><div class="hd"><h2>இன்றைய நிகழ்வுகள்</h2><button id="eRef" type="button" class="sm">⟳ புதுப்பி</button></div>
+<p class="mut" id="eDate" style="margin:0 0 8px"></p><div id="eBody"></div></div></div>
 <div id="aAnb" class="hide"><div class="card"><div class="hd"><h2>அன்பியங்கள் (<span id="ncnt">0</span>)</h2><button id="nRef" type="button" class="sm">⟳ புதுப்பி</button></div>
 <p class="mut" style="margin:0 0 8px">செயலிழக்கச் செய்தால் புதிய பதிவுகளில் அந்தப் பெயர் தோன்றாது; ஏற்கனவே உள்ள பதிவுகள் மாறாது.</p>
 <div id="nMsg"></div>
@@ -245,17 +276,19 @@ body.adminOnly #tF,body.adminOnly #tL{display:none}
 <label style="margin:0;font-weight:400">உறுதி பூசுதல் வயது ≥ <input id="dCF" type="number" min="0" max="40" value="14" style="width:70px;display:inline-block"></label></div>
 <div id="dGapB"></div></div>
 <div class="card pii"><div class="hd"><h2>வரவிருக்கும் நிகழ்வுகள்</h2><button type="button" class="sm noprint" data-exp="ev">CSV</button></div>
-<div class="tools noprint"><select id="dEvW" aria-label="காலம்"><option value="0">இன்று மட்டும்</option><option value="7">அடுத்த 7 நாட்கள்</option><option value="30" selected>அடுத்த 30 நாட்கள்</option><option value="60">அடுத்த 60 நாட்கள்</option><option value="90">அடுத்த 90 நாட்கள்</option><option value="month">இந்த மாதம்</option></select></div>
+<div class="tools noprint"><select id="dEvW" aria-label="காலம்"><option value="0">இன்று மட்டும்</option><option value="7" selected>அடுத்த 7 நாட்கள்</option><option value="30">அடுத்த 30 நாட்கள்</option><option value="60">அடுத்த 60 நாட்கள்</option><option value="90">அடுத்த 90 நாட்கள்</option><option value="month">இந்த மாதம்</option></select></div>
 <div id="dEvB"></div></div>
 <div class="card pii"><div class="hd"><h2>தரவுத் தர சோதனை</h2><button type="button" class="sm noprint" data-exp="q">CSV</button></div><div id="dQB"></div></div>
 <div class="card pii"><div class="hd"><h2>உறுப்பினர் தேடல்</h2><button type="button" class="sm noprint" data-exp="s">CSV</button></div>
-<input id="dSq" type="text" class="noprint" placeholder="பெயர் / தலைவர் / அன்பியம் / முகவரி / எண்">
+<div class="tools noprint"><select id="dSa" aria-label="அன்பியம்"><option value="">எல்லா அன்பியங்களும்</option></select><input id="dSq" type="text" placeholder="பெயர் / தலைவர் / அன்பியம் / முகவரி / எண்" style="flex:1 1 220px"></div>
 <div id="dSB"></div></div>
 <div class="card pii"><div class="hd"><h2>குடும்பப் பட்டியல்</h2><button type="button" class="sm noprint" data-exp="fam">CSV</button></div><div id="dFamB"></div></div>
 </div>
 
 </div>
 </div>
+
+<div id="vC" class="hide"></div>
 
 <div id="vL" class="hide">
 <div class="card">
@@ -269,10 +302,35 @@ body.adminOnly #tF,body.adminOnly #tL{display:none}
 </div>
 </div>
 
+<div id="vfy" class="vfy" role="dialog" aria-modal="true" aria-labelledby="vfyT">
+<div class="bx">
+<h2 id="vfyT">சரிபார்ப்பு – முழு விவரம்</h2>
+<div id="vfyBody"></div>
+<p class="msg ok" style="margin:12px 0 0">இந்த விவரங்கள் சரியாக உள்ளன என உறுதி செய்து, 'சரிபார்க்கப்பட்டது' எனக் குறிக்கவா?</p>
+<div class="acts"><button id="vfyNo" type="button">ரத்து செய்</button><button id="vfyOk" type="button" class="p">✔ ஆம், சரிபார்க்கப்பட்டது எனக் குறி</button></div>
+</div>
+</div>
 <div id="wait" class="wait" role="alert" aria-live="assertive"><div class="bx"><div class="spin"></div><div id="waitTxt"></div></div></div>
 
+<div id="rcm" class="vfy" role="dialog" aria-modal="true"><div class="bx"><div id="rcBody"></div><div id="rcAfter" class="noprint"></div>
+<div class="noprint"><label for="rcNum">WhatsApp எண்</label><input id="rcNum" type="tel" inputmode="numeric" style="width:auto;min-width:160px"></div>
+<div class="acts noprint"><button id="rcWa" type="button" class="p">WhatsApp</button><button id="rcPrint" type="button">அச்சிடு / PDF</button><button id="rcClose" type="button">மூடு</button></div></div></div>
+<div id="fcm" class="vfy" role="dialog" aria-modal="true"><div class="bx">
+<div id="fcCard"></div>
+<div class="noprint">
+<div id="fcMsg"></div>
+<label for="fcDays">செல்லுபடியாகும் நாட்கள்</label>
+<div class="acts" style="justify-content:flex-start;margin-top:0;align-items:center"><input id="fcDays" type="number" min="1" max="365" step="1" value="1" inputmode="numeric" style="width:100px"><button id="fcMake" type="button" class="p">இணைப்பை உருவாக்கு</button></div>
+<div id="fcLinkBox" class="hide">
+<label for="fcLink">இணைப்பு</label><input id="fcLink" type="text" readonly>
+<label for="fcNum">அலைபேசி எண் (WhatsApp / SMS அனுப்ப)</label><input id="fcNum" type="tel" inputmode="numeric">
+<div class="acts" style="justify-content:flex-start"><button id="fcWa" type="button" class="p">WhatsApp</button><button id="fcSms" type="button">SMS</button><button id="fcCopy" type="button">இணைப்பை நகலெடு</button></div>
+</div>
+<p class="mut" style="margin:10px 0 0">இந்த இணைப்பை வைத்திருப்பவர் இந்தக் குடும்ப அட்டையைப் பார்க்கலாம். இணைப்பு நீங்கள் தேர்ந்தெடுத்த நாட்கள் வரை மட்டுமே செயல்படும். புதிய இணைப்பு உருவாக்கினால் பழைய இணைப்பு செயலிழக்கும்.</p>
+<div class="acts"><button id="fcPrint" type="button">அச்சிடு / PDF</button><button id="fcClose" type="button">மூடு</button></div>
+</div></div></div>
 <script>
-var SCRIPT_URL="https://script.google.com/macros/s/AKfycbwEByS1wokE4ku1eoiuePo_QxonH02kN-I9P6mjvEZUFulgIIHav_go6UX0aha2ZU2Ltg/exec";
+var SCRIPT_URL="https://script.google.com/macros/s/AKfycbwQYgBjSGOEVX5QlNNC-p6AnnLWWr2TcNKQcL4onNK_pm_S3UNnwW2rnrShJx8DGLrW6A/exec";
 var F=[["name","முழு பெயர்","text"],["gender","பாலினம்","sel",["ஆண்","பெண்","மற்றவை"]],["rel","குடும்பத் தலைவருடன் உறவு முறை","combo"],["status","உறுப்பினர் நிலை","sel",["உயிருடன்","இறந்தவர்"]],["dDate","இறந்த தேதி","date"],["dob","பிறந்த தேதி","date"],["pob","பிறந்த இடம்","text"],["bDate","திருமுழுக்கு பெற்ற தேதி","date"],["bPlace","திருமுழுக்கு பெற்ற பங்கு / இடம்","text"],["cDate","புது நன்மை பெற்ற தேதி","date"],["cPlace","புது நன்மை பெற்ற பங்கு / இடம்","text"],["kDate","உறுதி பூசுதல் பெற்ற தேதி","date"],["kPlace","உறுதி பூசுதல் பெற்ற பங்கு / இடம்","text"],["marital","திருமண நிலை","sel",["திருமணமாகாதவர்","திருமணமானவர்","விதவை / மனைவியை இழந்தவர்","துறவறம்"]],["mDate","திருமண / துறவற தேதி","date"],["mPlace","திருமணம் / துறவற இடம்","text"]];
 var REL=[["Mother","அம்மா"],["Father","அப்பா"],["Brother","சகோதரன்"],["Sister","சகோதரி"],["Son","மகன்"],["Daughter","மகள்"],["Husband","கணவர்"],["Wife","மனைவி"],["Grandfather","தாத்தா"],["Grandmother","பாட்டி"],["Grandson","பேரன்"],["Granddaughter","பேத்தி"],["Father-in-law","மாமனார்"],["Mother-in-law","மாமியார்"],["Brother-in-law","மைத்துனர்"],["Sister-in-law","மைத்துனி"]];
 function fillRel(){$("relList").innerHTML=REL.map(function(r){return'<option value="'+r[0]+'" label="'+(LANG==="en"?r[0]:r[1])+'"></option>'}).join("")}
@@ -304,6 +362,17 @@ function errText(j){var e=j&&j.error;
   if(e==="anbexists")return"இந்தப் பெயரில் அன்பியம் ஏற்கனவே உள்ளது.";
   if(e==="inuse")return"இந்தப் பதிவு ஏற்கனவே செயலில் உள்ளது.";
   if(e==="duplicate")return"இரட்டைப் பதிவு என்பதால் சேமிக்கப்படவில்லை. விவரங்களைச் சரிபார்க்கவும்.";
+  if(e==="forbidden")return TX("இந்தப் பகுதிக்கு உங்களுக்கு அனுமதி இல்லை.","You do not have permission for this section.");
+  if(e==="fund")return TX("நிதி தேர்வு செய்யப்படவில்லை அல்லது செயலில் இல்லை.","The fund is not selected or is closed.");
+  if(e==="fundexists")return TX("இந்தப் பெயரில் நிதி ஏற்கனவே உள்ளது.","A fund with this name already exists.");
+  if(e==="amount")return TX("தொகை சரியாக இல்லை.","The amount is not valid.");
+  if(e==="date")return TX("தேதி சரியாக இல்லை (எதிர்காலத் தேதி அல்லது மிகப் பழைய தேதி இருக்கக்கூடாது).","The date is not valid (it cannot be in the future or too old).");
+  if(e==="ref")return TX("UPI பரிவர்த்தனை எண் அல்லது காசோலை எண் தேவை (சரியான வடிவில்).","A valid UPI transaction number or cheque number is required.");
+  if(e==="mode"||e==="type")return TX("செலுத்தும் முறை சரியாக இல்லை.","The payment mode is not valid.");
+  if(e==="donor")return TX("நன்கொடையாளர் பெயரை உள்ளிடவும்.","Enter the donor name.");
+  if(e==="reason")return TX("ரத்து செய்வதற்கான காரணம் தேவை (குறைந்தது 5 எழுத்துகள்).","A reason is required to cancel (at least 5 characters).");
+  if(e==="already")return TX("இந்த ரசீது ஏற்கனவே ரத்து செய்யப்பட்டுள்ளது.","This receipt has already been cancelled.");
+  if(e==="month")return TX("மாதம் சரியாக இல்லை. 'நிறுத்தப்பட்டது' எனில் முடிவு மாதம் தேவை.","The month is not valid. A 'Stopped' family needs an end month.");
   if(e==="key")return"சர்வர் ஸ்கிரிப்ட் பழைய பதிப்பில் உள்ளது. Apps Script-இல் Deploy → Manage deployments → New version செய்யவும்.";
   if(e==="server")return"சர்வரில் பிழை ஏற்பட்டது. Apps Script-இல் Executions பகுதியைப் பார்க்கவும்.";
   return"இணைப்புப் பிழை. சரிபார்த்து மீண்டும் முயலவும்."}
@@ -521,7 +590,7 @@ async function adminLogin(){
   $("alogin").disabled=true;aMsg("");
   var j=await call({action:"adminLogin",admin:pw,device:UA});   /* the server writes this attempt to the login history */
   $("alogin").disabled=false;
-  if(j&&j.ok){adminPw=pw;fams=[];famsFresh=false;$("apw").value="";$("aq").value="";$("aVer").value="";$("aAnbF").value="";$("aLock").classList.add("hide");$("aBody").classList.remove("hide");applyPage(j);loadAnbAdmin()}
+  if(j&&j.ok){adminPw=pw;ctAccess();fams=[];famsFresh=false;$("apw").value="";$("aq").value="";$("aVer").value="";$("aAnbF").value="";$("aLock").classList.add("hide");$("aBody").classList.remove("hide");applyPage(j);loadAnbAdmin();sub("E")}
   else aMsg(errText(j),"bad");
 }
 async function loadPage(off){   /* ONE page (10 families) from the server */
@@ -536,17 +605,17 @@ async function loadAllFams(){   /* everything - only the dashboard / CSV need th
   aMsg(errText(j),"bad");return false;
 }
 async function refreshAdmin(){famsFresh=false;await loadPage(PG.off)}
-function adminLogout(){adminPw="";fams=[];pageFams=[];famsFresh=false;pageStale=false;PG.off=0;PG.total=0;VOLS=[];LOGS=[];BIN=[];ANBA=[];ANBO=[];ANBS=[];fillAnb("");dashAnb="";sub("A");$("aBody").classList.add("hide");$("aLock").classList.remove("hide");$("alist").innerHTML="";aMsg("");showGate("")}
+function adminLogout(){adminPw="";ctAccess();CT.fam=null;fams=[];pageFams=[];famsFresh=false;pageStale=false;PG.off=0;PG.total=0;VOLS=[];LOGS=[];BIN=[];ANBA=[];ANBO=[];ANBS=[];fillAnb("");dashAnb="";sub("E");$("aBody").classList.add("hide");$("aLock").classList.remove("hide");$("alist").innerHTML="";aMsg("");showGate("")}
 function verBadge(f){var v=f.ver==="Verified";return'<span class="vbadge '+(v?'on':'pend')+'">'+(v?"சரிபார்க்கப்பட்டது":"சரிபார்ப்பு நிலுவை")+'</span>'}
 function renderAdmin(){
   var c=PG.counts;
   $("acnt").textContent=c.all;
-  $("aBy").textContent=PG.by.length?"சேகரிப்பவர் வாரியாக: "+PG.by.map(function(x){return x[0]+" – "+x[1]}).join(" · "):"";
+  $("aBy").innerHTML=PG.by.length?'<div><b>சேகரிப்பவர் வாரியாக:</b></div>'+PG.by.map(function(x){return'<div>'+esc(x[0])+' – '+x[1]+'</div>'}).join(""):"";
   $("aStat").textContent="சரிபார்ப்பு நிலுவை: "+c.pending+" · சரிபார்க்கப்பட்டது: "+c.verified;
   $("alist").innerHTML=pageFams.length?pageFams.map(function(f){
     var ms=f.members||[],dead=ms.filter(function(x){return x.status===DEAD}).length,v=f.ver==="Verified";
     return '<div class="list-item"><b>'+esc(f.head)+'</b> '+verBadge(f)+'<span class="mut">'+esc(f.anbiyam)+' · '+esc(f.phone||"")+' · உறுப்பினர்கள்: '+ms.length+(dead?' (இறந்தவர்: '+dead+')':'')+'</span>'+(f.addr?'<div class="mut">'+esc(f.addr)+'</div>':'')+(f.colName?'<div class="mut">சேகரித்தவர்: '+esc(f.colName)+(f.colPhone?' · '+esc(f.colPhone):'')+(f.colDate?' · '+esc(f.colDate):'')+'</div>':'')+(v&&f.verAt?'<div class="mut">சரிபார்த்தவர்: '+esc(f.verBy||"Admin")+' · '+esc(f.verAt)+'</div>':'')+
-      '<button type="button" data-act="aver" data-id="'+esc(f.id)+'" data-st="'+(v?"Pending":"Verified")+'" style="'+BS+'">'+(v?"↺ நிலுவைக்கு மாற்று":"✔ சரிபார்")+'</button><button type="button" data-act="aedit" data-id="'+esc(f.id)+'" style="'+BS+'">திருத்து</button><button type="button" data-act="adel" data-id="'+esc(f.id)+'" style="'+BS+'">நீக்கு</button></div>';
+      '<button type="button" data-act="aver" data-id="'+esc(f.id)+'" data-st="'+(v?"Pending":"Verified")+'" style="'+BS+'">'+(v?"↺ நிலுவைக்கு மாற்று":"✔ சரிபார்")+'</button><button type="button" data-act="acard" data-id="'+esc(f.id)+'" style="'+BS+'">📇 குடும்ப அட்டை</button><button type="button" data-act="aedit" data-id="'+esc(f.id)+'" style="'+BS+'">திருத்து</button><button type="button" data-act="adel" data-id="'+esc(f.id)+'" style="'+BS+'">நீக்கு</button></div>';
   }).join(""):'<p class="mut">இல்லை.</p>';
   $("apInfo").textContent="காட்டப்படுவது "+(PG.total?PG.off+1:0)+"–"+(PG.off+pageFams.length)+" / "+PG.total;
   $("apPrev").disabled=PG.off<=0;$("apNext").disabled=PG.off+PG.limit>=PG.total;
@@ -560,6 +629,39 @@ async function adminVerify(id,st){
   var j=await call({action:"verify",admin:adminPw,id:id,status:st});
   if(j&&j.ok){famsFresh=false;aMsg(st==="Verified"?"சரிபார்க்கப்பட்டதாகக் குறிக்கப்பட்டது.":"மீண்டும் சரிபார்ப்பு நிலுவைக்கு மாற்றப்பட்டது.","ok");await loadPage(PG.off)}else aMsg(errText(j),"bad");
 }
+
+/* ---------- verify: show the FULL record, then ask for confirmation ---------- */
+var VFY=null;
+function escA(s){return esc(s).replace(/"/g,"&quot;")}
+function kv(k,vHtml){return'<div class="kv"><span class="k">'+esc(k)+'</span><span class="v">'+(vHtml!==""&&vHtml!=null?vHtml:"—")+'</span></div>'}
+function openVerify(id){
+  var f=pageFams.find(function(r){return r.id===id});if(!f)return;
+  VFY=id;
+  var ms=f.members||[],dead=ms.filter(function(x){return x.status===DEAD}).length,loc=String(f.loc||"");
+  var h='<div class="mb"><h3>குடும்ப விவரங்கள்</h3>'
+    +kv("குடும்பத் தலைவர்",esc(f.head))+kv("அன்பியம்",esc(f.anbiyam))+kv("அலைபேசி எண்",esc(f.phone))+kv("முகவரி",esc(f.addr))
+    +kv("இருப்பிடம்",/^https?:\/\//i.test(loc)?'<a href="'+escA(loc)+'" target="_blank" rel="noopener">📍 Google Maps</a>':esc(loc))
+    +kv("உறுப்பினர்கள்",ms.length+(dead?" (இறந்தவர்: "+dead+")":""))
+    +kv("சேகரித்தவர்",esc(f.colName)+(f.colName&&f.colPhone?" · ":"")+esc(f.colPhone))+kv("சேகரித்த தேதி",esc(f.colDate))
+    +kv("நிலை",verBadge(f))+'</div>';
+  ms.forEach(function(m,i){
+    h+='<div class="mb"><h3>குடும்ப உறுப்பினர் '+(i+1)+(i===0?" (குடும்பத் தலைவர்)":"")+'</h3>';
+    F.forEach(function(x){
+      var v=m[x[0]];if(!v)return;
+      if(x[2]==="date"){var d=pd(v);v=d?fd(d):v}else if(x[0]==="rel")v=relLabel(v);
+      h+=kv(x[1],esc(v));
+    });
+    h+='</div>';
+  });
+  $("vfyBody").innerHTML=h;
+  $("vfy").classList.add("on");$("vfyNo").focus();
+  $("vfy").firstElementChild.scrollTop=0;
+}
+function closeVerify(){VFY=null;$("vfy").classList.remove("on")}
+$("vfyNo").onclick=closeVerify;
+$("vfyOk").onclick=function(){var id=VFY;closeVerify();if(id)adminVerify(id,"Verified")};
+$("vfy").onclick=function(e){if(e.target===this)closeVerify()};
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&VFY)closeVerify()});
 
 function csvCell(v){v=v==null?"":String(v);return '"'+v.replace(/"/g,'""')+'"'}
 function makeCsv(list,name){
@@ -578,7 +680,7 @@ function dlCsv(out,name){
   document.body.appendChild(l);l.click();l.remove();
 }
 function rowsCsv(head,rows,name){dlCsv([head.map(tx).map(csvCell).join(",")].concat(rows.map(function(r){return r.map(csvCell).join(",")})),name)}
-function tab(n){["F","L","A"].forEach(function(k){$("v"+k).classList.toggle("hide",k!==n);$("t"+k).classList.toggle("on",k===n)});if(typeof updWide==="function")updWide()}
+function tab(n){["F","L","A","C"].forEach(function(k){$("v"+k).classList.toggle("hide",k!==n);$("t"+k).classList.toggle("on",k===n)});if(typeof updWide==="function")updWide()}
 
 $("addM").onclick=addMember;$("send").onclick=submit;
 $("tF").onclick=function(){if(editMode)resetForm();tab("F")};
@@ -592,7 +694,8 @@ $("items").onclick=function(e){var b=e.target.closest("button[data-act]");if(!b)
 $("alist").onclick=function(e){var b=e.target.closest("button[data-act]");if(!b)return;
   if(b.dataset.act==="aedit"){var f=pageFams.find(function(r){return r.id===b.dataset.id});if(f)startEdit(f,"admin","")}
   else if(b.dataset.act==="adel")adminDelete(b.dataset.id);
-  else if(b.dataset.act==="aver")adminVerify(b.dataset.id,b.dataset.st)};
+  else if(b.dataset.act==="acard")openCard(b.dataset.id);
+  else if(b.dataset.act==="aver"){if(b.dataset.st==="Verified")openVerify(b.dataset.id);else adminVerify(b.dataset.id,b.dataset.st)}};
 $("q").oninput=renderList;
 $("adl").onclick=async function(){if(await loadAllFams())makeCsv(fams,"parish-families-all.csv")};
 $("alogin").onclick=adminLogin;$("alogout").onclick=adminLogout;
@@ -615,12 +718,42 @@ function anbList(){var s=[],seen={};(ANBA.length?ANBA:ANBS).forEach(function(o){
 function eb(id){return'<button type="button" class="sm" data-act="dedit" data-id="'+esc(id)+'">திருத்து</button>'}
 function tbl(cols,rows,ids,cap){
   if(!rows.length)return'<p class="mut">இல்லை.</p>';
-  cap=cap||200;var h='<div class="wide"><table class="dt"><thead><tr>'+cols.map(function(c){return'<th>'+esc(c)+'</th>'}).join("")+(ids?'<th></th>':'')+'</tr></thead><tbody>';
-  rows.slice(0,cap).forEach(function(r,i){h+='<tr>'+r.map(function(c){return'<td>'+esc(c)+'</td>'}).join("")+(ids?'<td>'+eb(ids[i])+'</td>':'')+'</tr>'});
+  cap=cap||200;var h='<div class="wide"><table class="dt"><thead><tr>'+(ids?'<th></th>':'')+cols.map(function(c){return'<th>'+esc(c)+'</th>'}).join("")+'</tr></thead><tbody>';
+  rows.slice(0,cap).forEach(function(r,i){h+='<tr>'+(ids?'<td>'+eb(ids[i])+'</td>':'')+r.map(function(c){return'<td>'+esc(c)+'</td>'}).join("")+'</tr>'});
   h+='</tbody></table></div>';
   if(rows.length>cap)h+='<p class="mut">முதல் '+cap+' பதிவுகள் மட்டும் காட்டப்பட்டுள்ளன; முழுப் பட்டியலுக்கு CSV பயன்படுத்தவும்.</p>';
   return h;
 }
+var PT={},PSIZE=10;
+function ptSet(key,box,cols,rows,ids,sortable){   /* paged table: 10 rows per page, optional click-to-sort headers; edit button first */
+  var o=PT[key]||(PT[key]={p:0,c:-1,d:1});
+  o.box=box;o.cols=cols;o.rows=rows;o.ids=ids;o.sortable=!!sortable;o.sc=Array.isArray(sortable)?sortable:null;o.p=0;o.size=PSIZE;
+  if(!box.__pt){box.__pt=1;box.addEventListener("click",function(e){
+    var th=e.target.closest("th[data-c]"),pg=e.target.closest("button[data-pg]");
+    if(th){var c=+th.dataset.c;if(o.c===c)o.d=-o.d;else{o.c=c;o.d=1}o.p=0;ptDraw(key)}
+    else if(pg&&!pg.disabled){o.p+=+pg.dataset.pg;ptDraw(key)}
+  })}
+  ptDraw(key);
+}
+function ptDraw(key){
+  var t=PT[key],n=t.rows.length;
+  if(!n){t.box.innerHTML='<p class="mut">இல்லை.</p>';return}
+  var idx=t.rows.map(function(_,i){return i});
+  if(t.sortable&&t.c>=0)idx.sort(function(a,b){
+    var x=t.rows[a][t.c],y=t.rows[b][t.c],ex=(x===""||x==null),ey=(y===""||y==null);
+    if(ex||ey)return ex&&ey?0:(ex?1:-1);   /* blanks always last */
+    var r=(typeof x==="number"&&typeof y==="number")?x-y:String(x).localeCompare(String(y),"ta",{numeric:true,sensitivity:"base"});
+    return r*t.d||a-b});
+  var size=t.size,pages=Math.ceil(n/size);if(t.p>=pages)t.p=pages-1;if(t.p<0)t.p=0;
+  var from=t.p*size,part=idx.slice(from,from+size);
+  var h='<div class="wide"><table class="dt"><thead><tr>'+(t.ids?'<th></th>':'')+t.cols.map(function(c,i){var sx=t.sortable&&(!t.sc||t.sc.indexOf(i)>-1);return'<th'+(sx?' class="sortable" data-c="'+i+'" title="வரிசைப்படுத்து"':'')+'>'+esc(c)+(sx?(t.c===i?'<span class="sa">'+(t.d>0?"▲":"▼")+'</span>':'<span class="si">⇅</span>'):"")+'</th>'}).join("")+'</tr></thead><tbody>';
+  part.forEach(function(i){h+='<tr>'+(t.ids?'<td>'+eb(t.ids[i])+'</td>':'')+t.rows[i].map(function(c){return'<td>'+esc(c)+'</td>'}).join("")+'</tr>'});
+  h+='</tbody></table></div>';
+  if(n>size)h+='<div class="pager noprint"><button type="button" class="sm" data-pg="-1"'+(t.p<=0?' disabled':'')+'>← முந்தைய 10</button><span class="mut">காட்டப்படுவது '+(from+1)+'–'+(from+part.length)+' / '+n+'</span><button type="button" class="sm" data-pg="1"'+(t.p>=pages-1?' disabled':'')+'>அடுத்த 10 →</button></div>';
+  t.box.innerHTML=h;
+}
+window.addEventListener("beforeprint",function(){Object.keys(PT).forEach(function(k){PT[k].size=1e9;ptDraw(k)})});   /* printing shows every row */
+window.addEventListener("afterprint",function(){Object.keys(PT).forEach(function(k){PT[k].size=PSIZE;ptDraw(k)})});
 function hb(rows,max){
   max=max||Math.max.apply(null,rows.map(function(r){return r.v}).concat([1]));
   return rows.map(function(r){
@@ -634,6 +767,8 @@ function renderDash(){
   var sel=$("dAnb"),cur=dashAnb;
   sel.innerHTML="";var o0=document.createElement("option");o0.value="";o0.textContent="எல்லா அன்பியங்களும்";sel.appendChild(o0);
   anbList().forEach(function(k){var o=document.createElement("option");o.value=k;o.textContent=anbNameOf(k);sel.appendChild(o)});
+  var sa=$("dSa"),sv=sa.value;sa.innerHTML="";var s0=document.createElement("option");s0.value="";s0.textContent="எல்லா அன்பியங்களும்";sa.appendChild(s0);
+  anbList().forEach(function(k){var o=document.createElement("option");o.value=k;o.textContent=anbNameOf(k);sa.appendChild(o)});sa.value=sv;if(sa.value!==sv)sa.value="";
   sel.value=cur;if(sel.value!==cur){dashAnb="";sel.value=""}
   $("dNote").textContent=dashAnb?("வடிகட்டி: "+anbNameOf(dashAnb)+" — அன்பியம் வரைபடம் அனைத்து அன்பியங்களையும் காட்டும்; மற்ற பகுதிகள் இந்த அன்பியத்திற்கு மட்டும்."):("எல்லா அன்பியங்களும் · புதுப்பிக்கப்பட்ட நேரம்: "+new Date().toLocaleTimeString());
   renderKpi();renderAnbi();renderTrend();renderAge();renderMar();renderSac();renderGap();renderEv();renderQ();renderFam();renderSearch();
@@ -708,37 +843,49 @@ function renderMar(){
   var mo=F.filter(function(f){return f[0]==="marital"})[0][3].concat([NA]),go=["ஆண்","பெண்","மற்றவை",NA];
   L.forEach(function(x){var v=x.m.marital||NA,g=x.m.gender||NA;c[v]=(c[v]||0)+1;gc[g]=(gc[g]||0)+1});
   var row=function(o,cc,cls){return hb(o.map(function(k){var v=cc[k]||0;return{l:k,v:v,t:v+" ("+pct(v,L.length)+"%)",c:cls}}),Math.max(1,L.length))};
-  var rc={},rt=0;dfams().forEach(function(f){(f.members||[]).slice(1).forEach(function(m){var k=m.rel?relLabel(m.rel):NA;rc[k]=(rc[k]||0)+1;rt++})});
-  var rk=Object.keys(rc).sort(function(a,b){return rc[b]-rc[a]}),relHtml=rt?hb(rk.map(function(k){return{l:k,v:rc[k],t:rc[k]+" ("+pct(rc[k],rt)+"%)",c:"b3"}}),Math.max(1,rc[rk[0]])):'<p class="mut">இல்லை.</p>';
-  $("dMar").innerHTML='<p class="mut">உயிருடன் உள்ளவர்கள் மட்டும்: '+L.length+'</p><p><b>திருமண நிலை</b></p>'+row(mo,c,"b1")+'<p style="margin-top:14px"><b>பாலினம்</b></p>'+row(go,gc,"b2")+'<p style="margin-top:14px"><b>குடும்பத் தலைவருடன் உறவு முறை</b></p><p class="mut">தலைவர் தவிர மற்ற உறுப்பினர்கள்: '+rt+'</p>'+relHtml;
+  $("dMar").innerHTML='<p class="mut">உயிருடன் உள்ளவர்கள் மட்டும்: '+L.length+'</p><p><b>திருமண நிலை</b></p>'+row(mo,c,"b1")+'<p style="margin-top:14px"><b>பாலினம்</b></p>'+row(go,gc,"b2");
 }
 
 function hasS(m,a,b){return!!(m[a]||m[b])}
-function lineSvg(yrs,mn,mx){
-  if(mn>mx)return'<p class="mut">தேதி தரவு இல்லை.</p>';
-  var W=640,H=230,l=34,r=12,t=12,b=28,n=mx-mn+1,top=1,y,k;
-  for(y=mn;y<=mx;y++)(yrs[y]||[0,0,0]).forEach(function(v){top=Math.max(top,v)});
-  var px=function(y){return n>1?l+(y-mn)*(W-l-r)/(n-1):l+(W-l-r)/2},py=function(v){return t+(H-t-b)*(1-v/top)};
-  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="ஆண்டு வாரியான அருட்சாதனங்கள்" style="width:100%;height:auto">';
-  [0,top/2,top].forEach(function(v){s+='<line x1="'+l+'" x2="'+(W-r)+'" y1="'+py(v)+'" y2="'+py(v)+'" style="stroke:var(--line)"/><text x="'+(l-4)+'" y="'+(py(v)+4)+'" text-anchor="end" font-size="11" style="fill:var(--mut)">'+Math.round(v*10)/10+'</text>'});
-  var step=Math.ceil(n/10);
-  for(y=mn;y<=mx;y+=step)s+='<text x="'+px(y)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" style="fill:var(--mut)">'+y+'</text>';
-  var col=["var(--pri)","var(--acc)","#1f7a4d"];
-  for(k=0;k<3;k++){
-    var d="",pts="";
-    for(y=mn;y<=mx;y++){var v=(yrs[y]||[0,0,0])[k];d+=(d?"L":"M")+px(y)+" "+py(v)+" ";if(n<=40)pts+='<circle cx="'+px(y)+'" cy="'+py(v)+'" r="2.5" style="fill:'+col[k]+'"/>'}
-    s+='<path d="'+d+'" fill="none" stroke-width="2" style="stroke:'+col[k]+'"/>'+pts;
+var SACC=["#2b6cb0","#dd8a1c","#2f9e6e"],SACN=["திருமுழுக்கு","புது நன்மை","உறுதி பூசுதல்"],sacRange="10";
+function barSvg(yrs,y0,y1,tot){   /* grouped bars: one group per year, one bar per sacrament, the count printed on every bar */
+  var n=y1-y0+1,top=1,y,k;
+  for(y=y0;y<=y1;y++)(yrs[y]||[0,0,0]).forEach(function(v){top=Math.max(top,v)});
+  var st=[1,2,5,10,20,50,100,200,500,1000,2000,5000].filter(function(q){return top/q<=5})[0]||10000;
+  var tp=Math.ceil(top/st)*st,gw=n<=12?Math.max(46,Math.floor(640/n)):40,l=38,r=10,t=22,b=34,H=270,W=l+r+gw*n,bw=Math.max(7,Math.min(20,Math.floor((gw-8)/3)));
+  var py=function(v){return t+(H-t-b)*(1-v/tp)};
+  var s='<div class="wide"><svg viewBox="0 0 '+W+' '+H+'" width="'+W+'" role="img" aria-label="ஆண்டு வாரியான அருட்சாதனங்கள்" style="max-width:none;height:auto;min-width:100%">';
+  for(var v=0;v<=tp;v+=st)s+='<line x1="'+l+'" x2="'+(W-r)+'" y1="'+py(v)+'" y2="'+py(v)+'" style="stroke:var(--line)"/><text x="'+(l-5)+'" y="'+(py(v)+4)+'" text-anchor="end" font-size="11" style="fill:var(--mut)">'+v+'</text>';
+  for(y=y0;y<=y1;y++){
+    var gx=l+(y-y0)*gw,vals=yrs[y]||[0,0,0],x0=gx+(gw-bw*3)/2;
+    for(k=0;k<3;k++){
+      var h=(H-t-b)*vals[k]/tp,x=x0+k*bw;
+      s+='<rect x="'+x+'" y="'+(H-b-h)+'" width="'+(bw-1)+'" height="'+h+'" rx="2" fill="'+SACC[k]+'"><title>'+y+' · '+SACN[k]+': '+vals[k]+'</title></rect>';
+      if(vals[k]>0&&bw>=9)s+='<text x="'+(x+(bw-1)/2)+'" y="'+(H-b-h-4)+'" text-anchor="middle" font-size="'+(bw>=14?11:9)+'" font-weight="600" style="fill:var(--ink)">'+vals[k]+'</text>';
+    }
+    s+='<text x="'+(gx+gw/2)+'" y="'+(H-12)+'" text-anchor="middle" font-size="11" style="fill:var(--mut)">'+y+'</text>';
   }
-  return s+'</svg><p class="mut"><span style="color:var(--pri)">●</span> திருமுழுக்கு &nbsp; <span style="color:var(--acc)">●</span> புது நன்மை &nbsp; <span style="color:#1f7a4d">●</span> உறுதி பூசுதல்</p>';
+  s+='<line x1="'+l+'" x2="'+(W-r)+'" y1="'+(H-b)+'" y2="'+(H-b)+'" style="stroke:var(--mut)"/></svg></div>';
+  var lg='<p style="margin:8px 0">';
+  for(k=0;k<3;k++)lg+='<span style="white-space:nowrap;margin-right:14px"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:'+SACC[k]+';vertical-align:-1px"></span> '+SACN[k]+' ('+tot[k]+')</span>';
+  return lg+'</p>'+s+'<p class="mut">பட்டையின் மேல் உள்ள எண் = அந்த ஆண்டில் அந்த அருட்சாதனம் பெற்றவர்கள். மேலே அடைப்புக்குள் உள்ள எண் = தேர்ந்தெடுத்த ஆண்டுகளின் மொத்தம்.</p>';
 }
 function renderSac(){
   var L=flat(dfams()),lv=L.filter(function(x){return!x.dead});
-  var rows=[["திருமுழுக்கு","bDate","bPlace","b1"],["புது நன்மை","cDate","cPlace","b2"],["உறுதி பூசுதல்","kDate","kPlace","b3"]].map(function(s){
+  var rows=[[SACN[0],"bDate","bPlace","b1"],[SACN[1],"cDate","cPlace","b2"],[SACN[2],"kDate","kPlace","b3"]].map(function(s){
     var n=lv.filter(function(x){return hasS(x.m,s[1],s[2])}).length;return{l:s[0],v:n,t:n+" ("+pct(n,lv.length)+"%)",c:s[3]}});
   var yrs={},mn=9999,mx=0,keys=["bDate","cDate","kDate"],cy=T.getFullYear();
   L.forEach(function(x){keys.forEach(function(k,i){var d=pd(x.m[k]);if(!d)return;var y=d.getFullYear();if(y<1900||y>cy)return;(yrs[y]=yrs[y]||[0,0,0])[i]++;mn=Math.min(mn,y);mx=Math.max(mx,y)})});
-  $("dSac").innerHTML='<p class="mut">அருட்சாதனம் பெற்ற உயிருடன் உள்ளவர்கள் (மொத்தம் '+lv.length+')</p>'+hb(rows,Math.max(1,lv.length))+'<p style="margin-top:14px"><b>ஆண்டு வாரியான போக்கு (அனைத்து உறுப்பினர்)</b></p>'+lineSvg(yrs,mn,mx);
+  var h='<p class="mut">அருட்சாதனம் பெற்ற உயிருடன் உள்ளவர்கள் (மொத்தம் '+lv.length+')</p>'+hb(rows,Math.max(1,lv.length))+'<p style="margin-top:14px"><b>ஆண்டு வாரியான போக்கு (அனைத்து உறுப்பினர்)</b></p>';
+  if(mn>mx){$("dSac").innerHTML=h+'<p class="mut">தேதி தரவு இல்லை.</p>';return}
+  var span=sacRange==="all"?mx-mn+1:Math.min(+sacRange,mx-mn+1),y1=mx,y0=y1-span+1,tot=[0,0,0],tr=[];
+  for(var y=y1;y>=y0;y--){var v=yrs[y]||[0,0,0];v.forEach(function(c,i){tot[i]+=c});tr.push([y,v[0],v[1],v[2],v[0]+v[1]+v[2]])}
+  h+='<div class="tools noprint"><select id="dSacR" aria-label="ஆண்டு வரம்பு">'+[["10","கடைசி 10 ஆண்டுகள்"],["20","கடைசி 20 ஆண்டுகள்"],["30","கடைசி 30 ஆண்டுகள்"],["all","அனைத்து ஆண்டுகள்"]].map(function(o){return'<option value="'+o[0]+'"'+(o[0]===sacRange?" selected":"")+'>'+o[1]+'</option>'}).join("")+'</select></div>';
+  h+=barSvg(yrs,y0,y1,tot)+'<p style="margin-top:14px"><b>ஆண்டு வாரியான எண்ணிக்கை</b></p><div id="dSacT"></div>';
+  $("dSac").innerHTML=h;
+  ptSet("sac",$("dSacT"),["ஆண்டு"].concat(SACN,["மொத்தம்"]),tr,null,true);
 }
+$("dSac").onchange=function(e){if(e.target.id==="dSacR"){sacRange=e.target.value;renderSac()}};
 function renderGap(){
   var fc=+$("dFC").value||0,cf=+$("dCF").value||0,L=flat(dfams()).filter(function(x){return!x.dead}),g1=[],g2=[],g3=[];
   L.forEach(function(x){
@@ -760,8 +907,8 @@ function renderGap(){
 
 function nextOcc(d){var n=new Date(T.getFullYear(),d.getMonth(),d.getDate());if(n<T)n=new Date(T.getFullYear()+1,d.getMonth(),d.getDate());return n}
 function dayTxt(n){return n===0?"இன்று":n===1?"நாளை":n+" நாட்களில்"}
-function renderEv(){
-  var w=$("dEvW").value,L=flat(dfams()),ev={b:[],w:[],m:[]},wed={};
+function calcEv(L,w){   /* birthdays / wedding anniversaries / death anniversaries that fall inside the window (w = days or "month") */
+  var ev={b:[],w:[],m:[]},wed={};
   var inWin=function(o){var days=Math.round((o-T)/864e5);if(w==="month")return(o.getMonth()===T.getMonth()&&o.getFullYear()===T.getFullYear())?days:-1;return days<=+w?days:-1};
   L.forEach(function(x){
     var m=x.m,d;
@@ -772,6 +919,10 @@ function renderEv(){
     if(x.dead&&(d=pd(m.dDate))){var o2=nextOcc(d),y2=o2.getFullYear()-d.getFullYear(),dy2=inWin(o2);if(dy2>=0&&y2>0)ev.m.push({days:dy2,o:o2,who:m.name||"",f:x.f,info:y2+"-ஆம் ஆண்டு நினைவு"})}
   });
   Object.keys(wed).forEach(function(k){var e=wed[k],o=nextOcc(e.d),y=o.getFullYear()-e.d.getFullYear(),dy=inWin(o);if(dy>=0&&y>0)ev.w.push({days:dy,o:o,who:e.n.join(" & "),f:e.f,info:y+"-ஆம் ஆண்டு திருமண நாள்"})});
+  return ev;
+}
+function renderEv(){
+  var ev=calcEv(flat(dfams()),$("dEvW").value);
   var cols=["தேதி","எப்போது","பெயர்","அன்பியம்","குடும்பத் தலைவர்","அலைபேசி","விவரம்"],h="",csv=[];
   [["🎂 பிறந்த நாள்","b"],["💍 திருமண நாள்","w"],["🕯 நினைவு நாள் (இறந்தவர்)","m"]].forEach(function(s){
     var a=ev[s[1]].sort(function(p,q){return p.days-q.days||String(p.who).localeCompare(String(q.who),"ta")});
@@ -783,6 +934,17 @@ function renderEv(){
   $("dEvB").innerHTML=h;
 }
 
+function renderToday(){   /* every family (not the dashboard filter): only events that fall TODAY */
+  T=today0();
+  var ev=calcEv(flat(fams),"0"),cols=["பெயர்","அன்பியம்","குடும்பத் தலைவர்","அலைபேசி","விவரம்"],h="",tot=0;
+  $("eDate").textContent="இன்றைய தேதி: "+p2(T.getDate())+"-"+p2(T.getMonth()+1)+"-"+T.getFullYear();
+  [["🎂 பிறந்த நாள்","b"],["💍 திருமண நாள்","w"],["🕯 நினைவு நாள் (இறந்தவர்)","m"]].forEach(function(s){
+    var a=ev[s[1]].filter(function(e){return e.days===0}).sort(function(p,q){return String(p.who).localeCompare(String(q.who),"ta")});tot+=a.length;
+    h+='<p style="margin:12px 0 4px"><b>'+s[0]+' ('+a.length+')</b></p>'+(a.length?tbl(cols,a.map(function(e){return[e.who,e.f.anbiyam||"",e.f.head||"",e.f.phone||"",e.info]})):'<p class="mut">இல்லை.</p>');
+  });
+  $("eBody").innerHTML=tot?h:'<p class="mut">இன்று நிகழ்வுகள் இல்லை.</p>'+h;
+}
+$("eRef").onclick=async function(){if(await loadAllFams())renderToday()};
 function renderQ(){
   var fl=dfams(),L=flat(fl),NA=function(s){return!String(s||"").trim()};
   var DL={};F.forEach(function(f){DL[f[0]]=f[1]});
@@ -835,19 +997,23 @@ function renderFam(){
   var fl=dfams().slice().sort(function(a,b){return String(a.head).localeCompare(String(b.head),"ta")});
   var cols=["குடும்பத் தலைவர்","அன்பியம்","அலைபேசி","உறுப்பினர்","முகவரி"],rows=fl.map(function(f){return[f.head||"",f.anbiyam||"",f.phone||"",(f.members||[]).length,f.addr||""]});
   X.fam={h:cols,r:rows};
-  $("dFamB").innerHTML=tbl(cols,rows,fl.map(function(f){return f.id}));
+  ptSet("fam",$("dFamB"),cols,rows,fl.map(function(f){return f.id}),true);
 }
 function renderSearch(){
   var q=$("dSq").value.trim().toLowerCase(),qd=q.replace(/\D/g,"");
   var cols=["பெயர்","பாலினம்","அகவை","நிலை","அன்பியம்","குடும்பத் தலைவர்","அலைபேசி"];
-  if(q.length<2){$("dSB").innerHTML='<p class="mut">குறைந்தது 2 எழுத்துகளை உள்ளிடவும் (பெயர் / தலைவர் / அன்பியம் / முகவரி / எண்).</p>';X.s={h:cols,r:[]};return}
+  var sa=$("dSa").value;
+  if(q.length<2&&!sa){$("dSB").innerHTML='<p class="mut">குறைந்தது 2 எழுத்துகளை உள்ளிடவும் அல்லது அன்பியத்தைத் தேர்ந்தெடுக்கவும்.</p>';X.s={h:cols,r:[]};return}
   var res=flat(dfams()).filter(function(x){
+    if(sa&&akey(x.f)!==sa)return false;
+    if(q.length<2)return true;
     var s=[x.m.name,x.f.head,x.f.anbiyam,x.f.addr].join(" ").toLowerCase();
     return s.indexOf(q)>-1||(qd.length>=3&&String(x.f.phone||"").replace(/\D/g,"").indexOf(qd)>-1);
   });
   var rows=res.map(function(x){return[x.m.name||"",x.m.gender||"",x.age==null?"":x.age,x.m.status||"",x.f.anbiyam||"",x.f.head||"",x.f.phone||""]});
   X.s={h:cols,r:rows};
-  $("dSB").innerHTML='<p class="mut">கிடைத்தவை: '+rows.length+'</p>'+tbl(cols,rows,res.map(function(x){return x.f.id}),50);
+  $("dSB").innerHTML='<p class="mut">கிடைத்தவை: '+rows.length+'</p><div id="dSBt"></div>';
+  ptSet("s",$("dSBt"),cols,rows,res.map(function(x){return x.f.id}),true);
 }
 
 function updWide(){document.querySelector(".wrap").classList.toggle("wd",dashOn&&!$("vA").classList.contains("hide"))}
@@ -865,23 +1031,25 @@ async function changePw(){
 $("pwBtn").onclick=changePw;
 async function sub(n){
   dashOn=(n==="D");
-  [["A","aRec"],["D","aDash"],["V","aVol"],["N","aAnb"],["B","aBin"],["C","aLog"]].forEach(function(p){$(p[1]).classList.toggle("hide",n!==p[0]);$("s"+p[0]).classList.toggle("on",n===p[0])});
+  [["A","aRec"],["D","aDash"],["V","aVol"],["H","aHist"],["E","aToday"],["N","aAnb"],["B","aBin"],["C","aLog"]].forEach(function(p){$(p[1]).classList.toggle("hide",n!==p[0]);$("s"+p[0]).classList.toggle("on",n===p[0])});
   updWide();
   if(!adminPw)return;
   if(n==="A"&&pageStale){pageStale=false;loadPage()}
   if(n==="D"){if(!famsFresh)await loadAllFams();if(dashOn)renderDash()}   /* the dashboard needs every record, so it is loaded only when opened */
   if(n==="V")loadVols();
+  if(n==="H")loadLogs();
+  if(n==="E"){if(!famsFresh)await loadAllFams();renderToday()}
   if(n==="N")loadAnbAdmin();
   if(n==="B")loadBin();
   if(n==="C")loadChg(0);
 }
-$("sA").onclick=function(){sub("A")};$("sD").onclick=function(){sub("D")};$("sV").onclick=function(){sub("V")};$("sN").onclick=function(){sub("N")};$("sB").onclick=function(){sub("B")};$("sC").onclick=function(){sub("C")};
+$("sA").onclick=function(){sub("A")};$("sD").onclick=function(){sub("D")};$("sV").onclick=function(){sub("V")};$("sH").onclick=function(){sub("H")};$("sE").onclick=function(){sub("E")};$("sN").onclick=function(){sub("N")};$("sB").onclick=function(){sub("B")};$("sC").onclick=function(){sub("C")};
 $("dAnb").onchange=function(){dashAnb=this.value;renderDash()};
 $("dPriv").onchange=function(){$("aDash").classList.toggle("priv",this.checked)};
 $("dRef").onclick=async function(){if(await loadAllFams())renderDash()};
 $("dPrint").onclick=function(){window.print()};
 $("dExp").onclick=function(){makeCsv(dfams(),"parish-families-"+(dashAnb?anbNameOf(dashAnb):"all")+".csv")};
-$("dEvW").onchange=renderEv;$("dFC").onchange=renderGap;$("dCF").onchange=renderGap;$("dSq").oninput=renderSearch;
+$("dEvW").onchange=renderEv;$("dFC").onchange=renderGap;$("dCF").onchange=renderGap;$("dSq").oninput=renderSearch;$("dSa").onchange=renderSearch;
 $("aDash").onclick=function(e){
   var x=e.target.closest("button[data-exp]");
   if(x){var o=X[x.dataset.exp];if(o)rowsCsv(o.h,o.r,"parish-"+x.dataset.exp+".csv");return}
@@ -901,7 +1069,7 @@ function showGate(t,c){
   $("gPw").value="";gm(t||"",c);
 }
 function enterApp(v){
-  VOL=v;SESSION=v.token;
+  VOL=v;SESSION=v.token;ctAccess();
   try{sessionStorage.setItem(SK,JSON.stringify(v))}catch(e){}
   $("gate").classList.add("hide");$("app").classList.remove("hide");setMode("vol");gateMode(false);
   $("whoName").textContent=v.name+" · "+v.mobile;$("whoBar").classList.remove("hide");gm("");
@@ -909,7 +1077,7 @@ function enterApp(v){
   if(!hashDone){hashDone=true;openFromHash()}
 }
 function volLogout(why){
-  SESSION="";VOL=null;try{sessionStorage.removeItem(SK)}catch(e){}
+  SESSION="";VOL=null;ctAccess();CT.fam=null;try{sessionStorage.removeItem(SK)}catch(e){}
   showGate(why==="session"?errText({error:"session"}):"",why==="session"?"bad":"ok");
 }
 async function volLogin(){
@@ -919,7 +1087,7 @@ async function volLogin(){
   $("gLogin").disabled=true;gm("");
   var j=await call({action:"login",mobile:mob,password:pw,device:(navigator.userAgent||"").slice(0,120)});
   $("gLogin").disabled=false;
-  if(j&&j.ok){$("gPw").value="";enterApp({token:j.token,name:j.name,mobile:j.mobile})}
+  if(j&&j.ok){$("gPw").value="";enterApp({token:j.token,name:j.name,mobile:j.mobile,contrib:j.contrib})}
   else gm(j&&j.error==="auth"?"அலைபேசி எண் அல்லது கடவுச்சொல் தவறு.":errText(j),"bad");
 }
 function enterAdmin(){
@@ -930,7 +1098,7 @@ async function boot(){
   if(!v||!v.token)return;
   SESSION=v.token;gm("சரிபார்க்கிறது…","ok");
   var j=await call({action:"check"});
-  if(j&&j.ok){v.name=j.name;v.mobile=j.mobile;enterApp(v)}
+  if(j&&j.ok){v.name=j.name;v.mobile=j.mobile;v.contrib=j.contrib;enterApp(v)}
   else if(SESSION){SESSION="";try{sessionStorage.removeItem(SK)}catch(e){}gm(j&&j.error==="network"?errText(j):"","bad")}
 }
 $("gLogin").onclick=volLogin;
@@ -958,10 +1126,9 @@ function vm(t,c){msgBox("vMsg",t,c)}
 async function loadVols(){
   var j=await call({action:"volList",admin:adminPw});
   if(j&&j.ok){VOLS=j.volunteers||[];renderVols()}else vm(errText(j),"bad");
-  await loadLogs();
 }
 async function loadLogs(){
-  var k=await call({action:"volLogins",admin:adminPw,limit:300,who:$("vlWho").value});
+  var k=await call({action:"volLogins",admin:adminPw,limit:1000,who:$("vlWho").value});
   if(k&&k.ok){LOGS=k.logins||[];renderLogs()}
 }
 function renderVols(){
@@ -969,18 +1136,18 @@ function renderVols(){
   $("vList").innerHTML=VOLS.length?VOLS.map(function(v){
     return'<div class="list-item"><b>'+esc(v.name)+'</b><span class="mut">'+esc(v.mobile)+' · <span class="vbadge '+(v.active?'on':'off')+'">'+(v.active?'செயலில்':'செயலிழந்தது')+'</span> · கடைசி உள்நுழைவு: '+esc(v.last||"—")+' · சேகரித்த பதிவுகள்: '+(v.records||0)+'</span>'+
       '<button type="button" data-vact="toggle" data-m="'+esc(v.mobile)+'" style="'+BS+'">'+(v.active?'செயலிழக்கச் செய்':'செயல்படுத்து')+'</button>'+
-      '<button type="button" data-vact="pw" data-m="'+esc(v.mobile)+'" style="'+BS+'">கடவுச்சொல் மாற்று</button></div>';
+      '<button type="button" data-vact="pw" data-m="'+esc(v.mobile)+'" style="'+BS+'">கடவுச்சொல் மாற்று</button><div class="mut" style="margin-top:6px"><span>'+TX("பங்களிப்புகள் அணுகல்","Contributions access")+'</span> <select data-vct="'+esc(v.mobile)+'" style="width:auto">'+ctOpts(v.contrib)+'</select></div></div>';
   }).join(""):'<p class="mut">இன்னும் தன்னார்வலர்கள் இல்லை.</p>';
 }
 function renderLogs(){
-  $("vLog").innerHTML=tbl(["நேரம்","அலைபேசி","பெயர்","முடிவு","சாதனம்"],LOGS,null,300);
+  ptSet("log",$("vLog"),["நேரம்","அலைபேசி","பெயர்","முடிவு","சாதனம்"],LOGS,null,[0,1,2]);   /* 10 per page; only time, mobile and name sort */
 }
 async function addVol(){
   var n=$("vName").value.trim(),m=$("vMob").value.trim(),p=$("vPw").value;
   if(n.length<2||m.replace(/\D/g,"").length<10){vm("பெயரையும் 10 இலக்க அலைபேசி எண்ணையும் உள்ளிடவும்.","bad");return}
   if(!p){vm("கடவுச்சொல்லை உள்ளிடவும்.","bad");return}
   $("vAdd").disabled=true;
-  var j=await call({action:"volSave",admin:adminPw,name:n,mobile:m,password:p});
+  var j=await call({action:"volSave",admin:adminPw,name:n,mobile:m,password:p,contrib:$("vCt").value});
   $("vAdd").disabled=false;
   if(j&&j.ok){vm("தன்னார்வலர் சேர்க்கப்பட்டார். அலைபேசி: "+m.replace(/\D/g,"").slice(-10)+" · கடவுச்சொல்: "+p+" (இதை அவரிடம் தெரிவிக்கவும்)","ok");["vName","vMob","vPw"].forEach(function(i){$(i).value=""});loadVols()}
   else vm(errText(j),"bad");
@@ -998,7 +1165,7 @@ async function vAct(b){
     if(k&&k.ok)vm(v.name+" - புதிய கடவுச்சொல்: "+np+" (இதை அவரிடம் தெரிவிக்கவும்)","ok");else vm(errText(k),"bad");
   }
 }
-$("vAdd").onclick=addVol;$("vRef").onclick=loadVols;$("vlWho").onchange=loadLogs;
+$("vAdd").onclick=addVol;$("vRef").onclick=loadVols;$("vlWho").onchange=loadLogs;$("lRef").onclick=loadLogs;
 $("vList").onclick=function(e){var b=e.target.closest("button[data-vact]");if(b)vAct(b)};
 $("vlCsv").onclick=function(){rowsCsv(["நேரம்","அலைபேசி","பெயர்","முடிவு","சாதனம்"],LOGS,"parish-login-history.csv")};
 
@@ -1104,6 +1271,86 @@ $("cSearch").onclick=function(){loadChg(0)};$("cq").onkeydown=function(e){if(e.k
 $("cPrev").onclick=function(){loadChg(Math.max(0,CH.off-CH.lim))};$("cNext").onclick=function(){loadChg(CH.off+CH.lim)};
 $("apPrev").onclick=function(){loadPage(Math.max(0,PG.off-PG.limit))};$("apNext").onclick=function(){loadPage(PG.off+PG.limit)};
 $("aVer").onchange=function(){loadPage(0)};$("aAnbF").onchange=function(){loadPage(0)};$("aSearch").onclick=function(){loadPage(0)};$("aq").onkeydown=function(e){if(e.key==="Enter")loadPage(0)};
+
+/* ================= FAMILY CARD (share by WhatsApp / SMS link) ================= */
+var CC="91",FC={id:"",f:null};   /* CC = country code added to 10-digit mobile numbers */
+function intlNum(v){var d=String(v||"").replace(/\D/g,"").replace(/^0+/,"");return d.length===10?CC+d:d}
+function cardUrl(id,key){return location.href.split("#")[0]+"#card="+id+"."+key}
+function cardMsg(head,link){return"வணக்கம்! "+head+" குடும்ப அட்டை / Family card: "+link}
+function waUrl(num,msg){return"https://wa.me/"+(num||"")+"?text="+encodeURIComponent(msg)}
+function smsUrl(num,msg){return"sms:"+(num?"+"+num:"")+"?&body="+encodeURIComponent(msg)}
+function fk(k,vHtml){return vHtml?'<div class="fk"><span class="k">'+esc(k)+'</span><span class="v">'+vHtml+'</span></div>':""}
+function cardHtml(c){   /* the card itself - used by the admin preview and by the public link */
+  var loc=String(c.loc||""),ms=c.members||[];
+  var h='<div class="fcard"><div class="fch"><div class="fct">குடும்ப அட்டை</div><div class="fcs">'+esc($("hGate").textContent)+'</div>'+(c.ver==="Verified"?'<span class="fcv">✔ சரிபார்க்கப்பட்டது</span>':'')+'</div><div class="fcb">';
+  h+=fk("குடும்பத் தலைவர்",esc(c.head))+fk("அன்பியம்",esc(c.anbiyam))+fk("அலைபேசி எண்",esc(c.phone))+fk("முகவரி",esc(c.addr))
+    +fk("இருப்பிடம்",/^https?:\/\//i.test(loc)?'<a href="'+escA(loc)+'" target="_blank" rel="noopener">📍 Google Maps</a>':esc(loc))+fk("உறுப்பினர்கள்",String(ms.length));
+  ms.forEach(function(m,i){
+    h+='<div class="fm"><h3>'+(i+1)+'. '+esc(m.name||"")+(m.rel?' — '+esc(relLabel(m.rel)):(i===0?' — குடும்பத் தலைவர்':''))+'</h3>';
+    F.forEach(function(x){var v=m[x[0]];if(!v||x[0]==="name"||x[0]==="rel")return;if(x[2]==="date"){var d=pd(v);v=d?fd(d):v}h+=fk(x[1],esc(v))});
+    h+='</div>';
+  });
+  return h+'</div></div>';
+}
+function fcm(t,c){msgBox("fcMsg",t,c)}
+function untilText(u){var p=String(u||"").split(" "),d=pd(p[0]);return(d?fd(d):p[0])+(p[1]?" "+p[1]:"")}
+function cardShow(j){   /* j = cardInfo / cardLink result: show the link (if one is working) */
+  var has=!!(j&&j.exists);FC.has=has;
+  $("fcLinkBox").classList.toggle("hide",!has);
+  $("fcMake").textContent=has?"புதிய இணைப்பை உருவாக்கு":"இணைப்பை உருவாக்கு";
+  if(has)$("fcLink").value=cardUrl(FC.id,j.key);
+}
+async function openCard(id){
+  var f=pageFams.find(function(r){return r.id===id});if(!f)return;
+  var j=await call({action:"cardInfo",admin:adminPw,id:id});
+  if(!(j&&j.ok)){aMsg(errText(j),"bad");return}
+  FC={id:id,f:f,max:j.maxDays||365,has:false};
+  $("fcCard").innerHTML=cardHtml(f);$("fcNum").value=f.phone||"";
+  $("fcDays").max=FC.max;$("fcDays").value=j.defDays||1;
+  cardShow(j);
+  fcm(j.exists?"இந்த இணைப்பு செல்லுபடியாகும் நாள்: "+untilText(j.until):(j.expired?"முந்தைய இணைப்பின் காலம் முடிந்துவிட்டது. புதிய இணைப்பை உருவாக்கவும்.":"செல்லுபடியாகும் நாட்களை உள்ளிட்டு இணைப்பை உருவாக்கவும்."),"ok");
+  $("fcm").classList.add("on");$("fcDays").focus();$("fcDays").select();
+}
+async function makeCard(){
+  var d=Number($("fcDays").value);
+  if(!(Number.isInteger(d)&&d>=1&&d<=FC.max)){fcm("நாட்களை 1 அல்லது அதற்கு மேல் முழு எண்ணாக உள்ளிடவும். அனுமதிக்கப்பட்ட நாட்கள் (அதிகபட்சம்): "+FC.max,"bad");return}
+  var had=FC.has;
+  if(had&&!confirm("புதிய இணைப்பை உருவாக்கினால் பழைய இணைப்பு செயல்படாது. தொடரவா?"))return;
+  var j=await call({action:"cardLink",admin:adminPw,id:FC.id,days:d});
+  if(!(j&&j.ok)){fcm(errText(j),"bad");return}
+  cardShow(j);
+  fcm("இணைப்பு உருவாக்கப்பட்டது. "+(had?"பழைய இணைப்பு இனி செயல்படாது. ":"")+"இந்த இணைப்பு செல்லுபடியாகும் நாள்: "+untilText(j.until),"ok");
+  $("fcWa").focus();
+}
+function closeCard(){$("fcm").classList.remove("on")}
+function fcShare(kind){
+  var msg=cardMsg(FC.f.head,$("fcLink").value),num=intlNum($("fcNum").value);
+  if(kind==="wa")window.open(waUrl(num,msg),"_blank","noopener");else location.href=smsUrl(num,msg);
+}
+$("fcWa").onclick=function(){fcShare("wa")};$("fcSms").onclick=function(){fcShare("sms")};
+$("fcCopy").onclick=function(){
+  var v=$("fcLink").value;function done(){fcm("இணைப்பு நகலெடுக்கப்பட்டது.","ok")}
+  function fb(){$("fcLink").select();try{document.execCommand("copy");done()}catch(e){}}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(v).then(done,fb);else fb();
+};
+$("fcPrint").onclick=function(){document.body.classList.add("cardprint");window.print();document.body.classList.remove("cardprint")};
+$("fcMake").onclick=makeCard;
+$("fcDays").onkeydown=function(e){if(e.key==="Enter")makeCard()};
+$("fcClose").onclick=closeCard;
+$("fcm").onclick=function(e){if(e.target===this)closeCard()};
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&$("fcm").classList.contains("on"))closeCard()});
+window.addEventListener("afterprint",function(){document.body.classList.remove("cardprint")});
+$("cvPrint").onclick=function(){window.print()};
+function cardBoot(){   /* a family opened its card link: show ONLY the card (no login) */
+  var m=/^#card=([a-z0-9]+)\.([a-f0-9]{32})$/.exec(location.hash);if(!m)return false;
+  ["hGate","hMain","subMain","gate","app","vA"].forEach(function(i){var e=$(i);if(e)e.classList.add("hide")});
+  document.body.classList.remove("gateMode");$("cardView").classList.remove("hide");
+  $("cvBody").innerHTML='<p class="mut">சரிபார்க்கிறது…</p>';
+  call({action:"cardGet",id:m[1],key:m[2]}).then(function(j){
+    $("cvBody").innerHTML=(j&&j.ok)?cardHtml(j.card)+(j.until?'<p class="mut noprint" style="margin:10px 0 0">இந்த இணைப்பு செல்லுபடியாகும் நாள்: '+esc(untilText(j.until))+'. அதற்குள் அச்சிட்டு அல்லது PDF ஆகச் சேமித்துக் கொள்ளவும்.</p>':''):'<p class="msg bad">'+esc(j&&j.error==="network"?errText(j):j&&j.error==="expired"?"இந்த இணைப்பின் காலம் முடிந்துவிட்டது. புதிய இணைப்புக்கு உங்கள் தன்னார்வலரை அல்லது பங்கு அலுவலகத்தை அணுகவும்.":"இணைப்பு செல்லாது அல்லது புதுப்பிக்கப்பட்டுள்ளது.")+'</p>';
+  });
+  return true;
+}
 
 /* ================= LANGUAGE (Tamil / English) ================= */
 var LANG="ta";try{LANG=localStorage.getItem("parishLang")==="en"?"en":"ta"}catch(e){}
@@ -1238,11 +1485,22 @@ var RX=[
 [/முதல் (\d+) பதிவுகள் மட்டும் காட்டப்பட்டுள்ளன; முழுப் பட்டியலுக்கு CSV பயன்படுத்தவும்\./g,"Only the first $1 records are shown; use CSV for the full list."]
 ];
 EX["சேகரித்தவர்"]="Collected by";EX["சேகரித்தவர் எண்"]="Collector mobile";
-EX["அன்பியங்கள்"]="Anbiyams";EX["அன்பியம் ID"]="Anbiyam ID";EX["ID இணைப்பைச் சரிசெய்"]="Fix ID links";EX["இணைக்கப்படாதவை"]="Not linked";EX["பெயர் மாற்று"]="Rename";EX["பட்டியலில் சேர்"]="Add to list";EX["அனைத்தும்"]="All";EX["அனைவரும்"]="Everyone";EX["சரிபார்ப்பு நிலுவை"]="Pending verification";EX["சரிபார்க்கப்பட்டது"]="Verified";EX["சரிபார்ப்பு நிலை"]="Verification status";
+EX["அன்பியங்கள்"]="Anbiyams";EX["குடும்ப அட்டை"]="Family Card";EX["📇 குடும்ப அட்டை"]="📇 Family card";EX["இணைப்பை நகலெடு"]="Copy link";EX["அச்சிடு / PDF"]="Print / PDF";EX["புதிய இணைப்பு"]="New link";if(!EX["மூடு"])EX["மூடு"]="Close";if(!EX["இணைப்பு"])EX["இணைப்பு"]="Link";EX["இன்றைய நிகழ்வுகள்"]="Today's Events";EX["ஆண்டு"]="Year";EX["கடைசி 10 ஆண்டுகள்"]="Last 10 years";EX["கடைசி 20 ஆண்டுகள்"]="Last 20 years";EX["கடைசி 30 ஆண்டுகள்"]="Last 30 years";EX["அனைத்து ஆண்டுகள்"]="All years";EX["ஆண்டு வரம்பு"]="Year range";EX["அன்பியம் ID"]="Anbiyam ID";EX["ID இணைப்பைச் சரிசெய்"]="Fix ID links";EX["இணைக்கப்படாதவை"]="Not linked";EX["பெயர் மாற்று"]="Rename";EX["பட்டியலில் சேர்"]="Add to list";EX["அனைத்தும்"]="All";EX["அனைவரும்"]="Everyone";EX["சரிபார்ப்பு நிலுவை"]="Pending verification";EX["சரிபார்க்கப்பட்டது"]="Verified";EX["சரிபார்ப்பு நிலை"]="Verification status";
 EX["✔ சரிபார்"]="✔ Verify";EX["↺ நிலுவைக்கு மாற்று"]="↺ Mark pending";EX["தேடு"]="Search";EX["மீட்டெடு"]="Restore";EX["நீக்கப்பட்டவை"]="Deleted";EX["மாற்றப் பதிவு"]="Change Log";
 EX["← முந்தைய 10"]="← Previous 10";EX["அடுத்த 10 →"]="Next 10 →";EX["← முந்தையவை"]="← Previous";EX["அடுத்தவை →"]="Next →";
+EX["செல்லுபடியாகும் நாட்கள்"]="Valid for (days)";EX["இணைப்பை உருவாக்கு"]="Create link";EX["புதிய இணைப்பை உருவாக்கு"]="Create new link";
 Object.keys(EX).forEach(function(k){if(/அன்பியம்$/.test(k)&&k!=="அன்பியம்")PH.push([k,EX[k]])});
 PH.push(
+["இந்த இணைப்பை வைத்திருப்பவர் இந்தக் குடும்ப அட்டையைப் பார்க்கலாம். 'புதிய இணைப்பு' பழைய இணைப்பைச் செயலிழக்கச் செய்யும்.","Anyone with this link can view this family card. 'New link' stops the old link from working."],
+["புதிய இணைப்பை உருவாக்கினால் பழைய இணைப்பு செயல்படாது. தொடரவா?","If you create a new link, the old link will stop working. Continue?"],
+["புதிய இணைப்பு உருவாக்கப்பட்டது. பழைய இணைப்பு இனி செயல்படாது.","New link created. The old link no longer works."],
+["இணைப்பு நகலெடுக்கப்பட்டது.","Link copied."],["இணைப்பு செல்லாது அல்லது புதுப்பிக்கப்பட்டுள்ளது.","This link is invalid or has been replaced."],
+["அலைபேசி எண் (WhatsApp / SMS அனுப்ப)","Mobile number (to send by WhatsApp / SMS)"],
+["நேரம் / அலைபேசி / பெயர் தலைப்பைத் தொட்டால் வரிசைப்படுத்தலாம். சமீபத்திய 1000 பதிவுகள் வரை.","Tap Time / Mobile / Name to sort. Latest 1000 entries."],
+["இன்றைய தேதி:","Today's date:"],["இன்று நிகழ்வுகள் இல்லை.","No events today."],["இன்றைய நிகழ்வுகள்","Today's Events"],
+["பட்டையின் மேல் உள்ள எண் = அந்த ஆண்டில் அந்த அருட்சாதனம் பெற்றவர்கள். மேலே அடைப்புக்குள் உள்ள எண் = தேர்ந்தெடுத்த ஆண்டுகளின் மொத்தம்.","The number on each bar = people who received that sacrament that year. The number in brackets above = total for the selected years."],
+["ஆண்டு வாரியான எண்ணிக்கை","Year-wise count"],
+["குறைந்தது 2 எழுத்துகளை உள்ளிடவும் அல்லது அன்பியத்தைத் தேர்ந்தெடுக்கவும்.","Enter at least 2 characters or choose an Anbiyam."],["வரிசைப்படுத்து","Sort"],
 ["அன்பியத்துடன் இணைக்கப்படாத குடும்பங்கள்","Families not linked to an Anbiyam"],["இணைக்கப்படாதவை","Not linked"],
 ["பதிவுகள் அன்பியம் ID உடன் இணைக்கப்படவில்லை.","records are not linked to an Anbiyam ID."],
 ["சரிசெய்தால் இவை புதிய அன்பியங்களாகச் சேர்க்கப்படும்.","Fixing will add them as new Anbiyams."],
@@ -1273,6 +1531,20 @@ PH.push(
 ["யார், எந்தப் பதிவை, எப்போது திருத்தினார் / நீக்கினார் என்பதை இங்கே காணலாம்.","See who edited or deleted which record, and when."],
 ["பெயர் / நபர் / செயல் மூலம் தேடுக","Search by name / person / action"],["மாற்றப் பதிவுகள் இல்லை.","No change log entries."],["மாற்றப் பதிவு","Change Log"]
 );
+PH.push(["சரிபார்ப்பு – முழு விவரம்","Verification – full details"],
+["இந்த விவரங்கள் சரியாக உள்ளன என உறுதி செய்து, 'சரிபார்க்கப்பட்டது' எனக் குறிக்கவா?","Confirm that these details are correct and mark the record as Verified?"],
+["✔ ஆம், சரிபார்க்கப்பட்டது எனக் குறி","✔ Yes, mark as Verified"]);
+PH.sort(function(a,b){return b[0].length-a[0].length});
+PH.push(["இந்த இணைப்பு செல்லுபடியாகும் நாள்:","This link is valid until:"],
+["இந்த இணைப்பை வைத்திருப்பவர் இந்தக் குடும்ப அட்டையைப் பார்க்கலாம். இணைப்பு நீங்கள் தேர்ந்தெடுத்த நாட்கள் வரை மட்டுமே செயல்படும். புதிய இணைப்பு உருவாக்கினால் பழைய இணைப்பு செயலிழக்கும்.","Anyone holding this link can view this family card. The link works only for the number of days you choose. Creating a new link disables the old one."],
+["முந்தைய இணைப்பின் காலம் முடிந்துவிட்டது. புதிய இணைப்பை உருவாக்கவும்.","The previous link has expired. Create a new link."],
+["செல்லுபடியாகும் நாட்களை உள்ளிட்டு இணைப்பை உருவாக்கவும்.","Enter the number of valid days and create the link."],
+["நாட்களை 1 அல்லது அதற்கு மேல் முழு எண்ணாக உள்ளிடவும்.","Enter the days as a whole number, 1 or more."],
+["அனுமதிக்கப்பட்ட நாட்கள் (அதிகபட்சம்):","Allowed days (maximum):"],
+["இணைப்பு உருவாக்கப்பட்டது.","Link created."],
+["பழைய இணைப்பு இனி செயல்படாது.","The old link no longer works."],
+["அதற்குள் அச்சிட்டு அல்லது PDF ஆகச் சேமித்துக் கொள்ளவும்.","Please print it or save it as a PDF before then."],
+["இந்த இணைப்பின் காலம் முடிந்துவிட்டது. புதிய இணைப்புக்கு உங்கள் தன்னார்வலரை அல்லது பங்கு அலுவலகத்தை அணுகவும்.","This link has expired. Please contact your volunteer or the parish office for a new link."]);
 PH.sort(function(a,b){return b[0].length-a[0].length});
 function seg(x){
   if(EX.hasOwnProperty(x))return EX[x];
@@ -1347,7 +1619,378 @@ function getLoc(){
 function openLoc(){var v=$("loc").value.trim();if(/^https?:\/\//i.test(v))window.open(v,"_blank","noopener");else $("locMsg").textContent="முதலில் இருப்பிடத்தைப் பதிவு செய்யவும் அல்லது இணைப்பை ஒட்டவும்."}
 $("locBtn").onclick=getLoc;$("locOpen").onclick=openLoc;
 
-addMember();renderList();setLang(LANG);boot();
+/* ================= CONTRIBUTIONS: subscriptions, funds, receipts, reports ================= */
+var TS={};
+function TX(ta,en){if(!TS[ta]){TS[ta]=1;if(!Object.prototype.hasOwnProperty.call(EX,ta))EX[ta]=en}return ta}                 /* whole-text translation */
+function TXP(ta,en){if(!TS[ta]){TS[ta]=1;PH.push([ta,en]);PH.sort(function(a,b){return b[0].length-a[0].length})}return ta}   /* phrase inside a longer text */
+var CT={init:null,cur:"R",req:"",fam:null,donor:false,plan:"",rp:"summary",built:false,lvl:0,find:{q:"",off:0},mine:{off:0},rpOff:0,rc:null};
+function ctLvl(){return adminPw?3:(VOL&&VOL.contrib?({Manager:2,Entry:1}[VOL.contrib]||0):0)}
+function ctAccess(){var l=ctLvl();document.body.classList.toggle("ctOn",l>0);if(l!==CT.lvl){CT.lvl=l;CT.init=null}if(!l&&!$("vC").classList.contains("hide"))tab(VOL?"F":"A")}
+function ctCall(a,x){var p=Object.assign({action:a},x||{});if(adminPw)p.admin=adminPw;return call(p)}
+function ctm(t,c){msgBox("ctMsg",t,c);if(t)window.scrollTo(0,0)}
+function inr(n){return"₹"+(Number(n)||0).toLocaleString("en-IN",{maximumFractionDigits:2})}
+var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function ymL(s){var m=/^(\d{4})-(\d{2})$/.exec(s||"");return m?MON[+m[2]-1]+" "+m[1]:(s||"—")}
+function dmy(s){var d=pd(String(s||"").slice(0,10));return d?fd(d):(s||"")}
+function dmyT(s){s=String(s||"");return dmy(s.slice(0,10))+(s.length>10?" "+s.slice(11,16):"")}
+function ctDay(back){var d=today0();d.setDate(d.getDate()-(back||0));return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate())}
+function regFunds(list){(list||[]).forEach(function(f){if(f.en)EX[f.name]=f.en})}
+function modeL(m){return m==="Cash"?TX("ரொக்கம்","Cash"):(m==="Cheque"?TX("காசோலை","Cheque"):"UPI")}
+function whatL(p){return p.type==="Subscription"?TX("சந்தா","Subscription"):(p.fund||"")}
+function inWords(n){
+  var a=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"],b=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+  function two(x){return x<20?a[x]:b[Math.floor(x/10)]+(x%10?" "+a[x%10]:"")}
+  function three(x){return(x>=100?a[Math.floor(x/100)]+" Hundred"+(x%100?" ":""):"")+(x%100?two(x%100):"")}
+  var r=Math.floor(n),p=Math.round((n-r)*100),o=[],cr=Math.floor(r/10000000),la=Math.floor(r/100000)%100,th=Math.floor(r/1000)%100,h=r%1000;
+  if(cr)o.push(three(cr)+" Crore");if(la)o.push(two(la)+" Lakh");if(th)o.push(two(th)+" Thousand");if(h)o.push(three(h));
+  return"Rupees "+(o.length?o.join(" "):"Zero")+(p?" and "+two(p)+" Paise":"")+" Only";
+}
+function kpi(v,l){return'<div class="kpi"><b style="font-size:1.05rem">'+esc(v)+'</b><div class="mut">'+l+'</div></div>'}
+function ctTbl(head,rows,num){
+  return'<div class="wide"><table class="dt"><thead><tr>'+head.map(function(h){return'<th>'+h+'</th>'}).join("")+'</tr></thead><tbody>'+
+    rows.map(function(r){return'<tr>'+r.map(function(c,i){return'<td'+(num&&num.indexOf(i)>-1?' style="text-align:right;white-space:nowrap"':'')+'>'+c+'</td>'}).join("")+'</tr>'}).join("")+'</tbody></table></div>';
+}
+function pgH(act,off,limit,total){
+  if(total<=limit)return"";
+  return'<div class="pager noprint"><button type="button" class="sm" data-ct="'+act+'prev"'+(off<=0?' disabled':'')+'>'+TX("← முந்தைய 10","← Previous 10")+'</button><span class="mut">'+(off+1)+'–'+Math.min(off+limit,total)+' / '+total+'</span><button type="button" class="sm" data-ct="'+act+'next"'+(off+limit>=total?' disabled':'')+'>'+TX("அடுத்த 10 →","Next 10 →")+'</button></div>';
+}
+function ptm(t,c){msgBox("ptMsg",t,c)}
+
+/* ---------- screen skeleton (built once) ---------- */
+function ctBuild(){
+  if(CT.built)return;CT.built=true;
+  var nf='style="width:auto"';
+  $("vC").innerHTML=
+  '<div class="tabs noprint" id="ctTabs" style="flex-wrap:wrap">'+
+    '<button type="button" id="ctbR" class="on" data-ct="tab" data-v="R">'+TX("பணம் பெறு","Receive payment")+'</button>'+
+    '<button type="button" id="ctbM" data-ct="tab" data-v="M">'+TX("என் வசூல்","My collection")+'</button>'+
+    '<button type="button" id="ctbP" data-ct="tab" data-v="P">'+TX("அறிக்கைகள்","Reports")+'</button>'+
+    '<button type="button" id="ctbF" data-ct="tab" data-v="F">'+TX("நிதிகள்","Funds")+'</button>'+
+    '<button type="button" id="ctbS" data-ct="tab" data-v="S">'+TX("சந்தா அமைப்பு","Subscription settings")+'</button></div>'+
+  '<div id="ctMsg"></div>'+
+  '<div id="ctR"><div class="card" id="ctSearch"><div class="hd"><h2>'+TX("குடும்பத்தைத் தேடுக","Find a family")+'</h2><button type="button" class="sm" data-ct="donor">'+TX("+ பட்டியலில் இல்லாதவர் (நிதி மட்டும்)","+ Not in the family list (fund only)")+'</button></div>'+
+    '<div class="tools"><input id="ctQ" type="text" autocomplete="off" placeholder="'+TX("பெயர் / எண் / அன்பியம் மூலம் தேடுக (குறைந்தது 2 எழுத்துகள்)","Search by name / number / Anbiyam (at least 2 characters)")+'" style="flex:1 1 200px"><button type="button" class="sm" data-ct="find">'+TX("தேடு","Search")+'</button></div>'+
+    '<div id="ctRes"></div><div id="ctPg"></div></div><div id="ctFam" class="hide"></div></div>'+
+  '<div id="ctM" class="hide"><div class="card"><h2>'+TX("என் வசூல்","My collection")+'</h2><div class="tools"><label style="margin:0">'+TX("முதல்","From")+'</label><input type="date" id="mnFrom" '+nf+'><label style="margin:0">'+TX("வரை","To")+'</label><input type="date" id="mnTo" '+nf+'><button type="button" class="sm" data-ct="mine">'+TX("காட்டு","Show")+'</button></div></div><div id="mnBody"></div></div>'+
+  '<div id="ctP" class="hide"><div class="card"><h2>'+TX("அறிக்கைகள்","Reports")+'</h2>'+
+    '<div class="tabs noprint" id="rpTabs" style="flex-wrap:wrap">'+[["summary","சுருக்கம்","Summary"],["dues","சந்தா நிலுவை","Subscription dues"],["funds","நிதிகள்","Funds"],["payments","அனைத்து ரசீதுகள்","All receipts"],["cancelled","ரத்து செய்யப்பட்டவை","Cancelled"]].map(function(x,i){return'<button type="button"'+(i?'':' class="on"')+' data-ct="rp" data-v="'+x[0]+'">'+TX(x[1],x[2])+'</button>'}).join("")+'</div>'+
+    '<div class="tools noprint" id="rpFil">'+
+      '<span data-for="summary payments cancelled"><label style="margin:0">'+TX("முதல்","From")+'</label> <input type="date" id="rpFrom" '+nf+'></span>'+
+      '<span data-for="summary payments cancelled"><label style="margin:0">'+TX("வரை","To")+'</label> <input type="date" id="rpTo" '+nf+'></span>'+
+      '<span data-for="summary payments"><select id="rpMode" style="width:auto"><option value="">'+TX("எல்லா முறைகளும்","All modes")+'</option><option value="Cash">'+TX("ரொக்கம்","Cash")+'</option><option value="UPI">UPI</option><option value="Cheque">'+TX("காசோலை","Cheque")+'</option></select></span>'+
+      '<span data-for="summary payments"><select id="rpType" style="width:auto"></select></span>'+
+      '<span data-for="dues payments"><select id="rpAnb" style="width:auto"></select></span>'+
+      '<span data-for="dues payments cancelled"><input type="text" id="rpQ" autocomplete="off" style="width:auto;min-width:150px" placeholder="'+TX("பெயர் / ரசீது எண்","Name / receipt no.")+'"></span>'+
+      '<span data-for="dues"><select id="rpOwe" style="width:auto"><option value="owing">'+TX("நிலுவை உள்ளவர்கள் மட்டும்","Only families that owe")+'</option><option value="all">'+TX("எல்லாக் குடும்பங்களும்","All families")+'</option></select></span>'+
+      '<button type="button" class="sm" data-ct="rpgo">'+TX("காட்டு","Show")+'</button><span data-for="dues payments cancelled"><button type="button" class="sm" data-ct="rpcsv">'+TX("CSV பதிவிறக்கம்","CSV download")+'</button></span></div></div><div id="rpBody"></div></div>'+
+  '<div id="ctF" class="hide"></div><div id="ctS" class="hide"></div>';
+  $("mnFrom").value=$("mnTo").value=ctDay(0);$("rpFrom").value=ctDay(30);$("rpTo").value=ctDay(0);
+}
+async function ctOpen(){
+  ctBuild();
+  var j=await ctCall("ctInit");
+  if(!(j&&j.ok)){ctm(errText(j),"bad");return}
+  CT.init=j;CT.lvl=j.level;regFunds(j.allFunds&&j.allFunds.length?j.allFunds:j.funds);
+  $("ctbP").classList.toggle("hide",j.level<2);$("ctbF").classList.toggle("hide",j.level<3);$("ctbS").classList.toggle("hide",j.level<3);
+  var so=[TX("எல்லா நிதிகள் / சந்தா","All funds / subscription"),""];   /* report filters that depend on the funds */
+  $("rpType").innerHTML='<option value="">'+so[0]+'</option><option value="Subscription">'+TX("சந்தா மட்டும்","Subscription only")+'</option><option value="Fund">'+TX("நிதிகள் (எல்லாம்)","All funds")+'</option>'+(j.allFunds&&j.allFunds.length?j.allFunds:j.funds).map(function(f){return'<option value="'+esc(f.id)+'">'+esc(f.name)+'</option>'}).join("");
+  var al=(adminPw&&ANBA.length?ANBA:ANBS);
+  $("rpAnb").innerHTML='<option value="">'+TX("எல்லா அன்பியங்களும்","All Anbiyams")+'</option>'+al.map(function(x){return'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>'}).join("");
+  ctSub(CT.cur&&!$("ctb"+CT.cur).classList.contains("hide")?CT.cur:"R");
+}
+function ctSub(n){
+  CT.cur=n;["R","M","P","F","S"].forEach(function(k){$("ct"+k).classList.toggle("hide",k!==n);$("ctb"+k).classList.toggle("on",k===n)});
+  ctm("");
+  if(n==="M")ctMine(0);else if(n==="P")rpShow();else if(n==="F")ctFunds();else if(n==="S")ctSettingsUI();
+}
+
+/* ---------- receipt window ---------- */
+function ctRcHtml(r,parish){
+  var what=r.type==="Subscription"?TX("சந்தா","Subscription")+(r.plan?" · "+r.plan:""):esc(r.fund);
+  function kv(k,v){return'<div class="fk"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>'}
+  return'<div class="fcard rcard"><div class="fch"><div class="fct">'+esc(parish||document.querySelector("h1").textContent)+'</div><div class="fcs">'+TX("ரசீது","RECEIPT")+' · '+esc(r.rec)+'</div></div><div style="padding:12px 14px">'+
+    (r.st==="Cancelled"?'<div class="msg bad" style="margin:0 0 8px">'+TX("ரத்து செய்யப்பட்டது","CANCELLED")+' · '+esc(r.cr)+'</div>':'')+
+    kv(TX("தேதி","Date"),esc(dmy(r.date)))+
+    kv(TX("பெறப்பட்டது","Received from"),esc(r.payer)+(r.anb?'<br><span class="mut">'+esc(r.anb)+'</span>':''))+
+    kv(TX("எதற்காக","For"),what)+
+    kv(TX("தொகை","Amount"),'<b>'+inr(r.amt)+'</b><br><span class="mut">'+esc(inWords(r.amt))+'</span>')+
+    kv(TX("செலுத்தும் முறை","Mode"),modeL(r.mode)+(r.ref?'<br><span class="mut">'+esc(r.ref)+'</span>':''))+
+    (r.note&&r.type==="Fund"?kv(TX("குறிப்பு","Note"),esc(r.note)):'')+
+    kv(TX("பெற்றவர்","Received by"),esc(r.by))+'</div></div>';
+}
+function ctShowRc(r,phone,after){
+  CT.rc={r:r,phone:phone||""};
+  $("rcBody").innerHTML=ctRcHtml(r,CT.init&&CT.init.settings.parishName);
+  $("rcAfter").innerHTML=after||"";$("rcNum").value=phone||"";
+  $("rcWa").classList.toggle("hide",r.st==="Cancelled");
+  $("rcm").classList.add("on");$("rcClose").focus();
+}
+function ctRcClose(){$("rcm").classList.remove("on");CT.rc=null;ctRefresh()}
+function ctRcWa(){
+  var r=CT.rc&&CT.rc.r;if(!r)return;
+  var msg=(CT.init.settings.parishName||document.querySelector("h1").textContent)+"\nரசீது / Receipt "+r.rec+"\n"+r.payer+"\n"+inr(r.amt)+" ("+(r.type==="Subscription"?"Subscription":r.fund)+") · "+r.mode+" · "+dmy(r.date)+"\nநன்றி / Thank you";
+  window.open(waUrl(intlNum($("rcNum").value),msg),"_blank","noopener");
+}
+function ctRcPrint(){document.body.classList.add("rcprint");window.print();setTimeout(function(){document.body.classList.remove("rcprint")},500)}
+async function ctReceipt(rec){
+  var j=await ctCall("ctReceipt",{receipt:rec});
+  if(j&&j.ok){if(CT.init)CT.init.settings.parishName=j.parish||CT.init.settings.parishName;ctShowRc(j.receipt,j.phone,"")}else ctm(errText(j),"bad");
+}
+async function ctCancel(rec){
+  var r=prompt(TX("ரத்து செய்வதற்கான காரணத்தை உள்ளிடவும் (குறைந்தது 5 எழுத்துகள்):","Enter the reason for cancelling (at least 5 characters):"));
+  if(r==null)return;r=r.trim();
+  if(r.length<5){ctm(errText({error:"reason"}),"bad");return}
+  if(!confirm(TX("இந்த ரசீது ரத்து செய்யப்படும். பதிவு அழிக்கப்படாது; ரத்து செய்யப்பட்டதாகக் குறிக்கப்படும். தொடரவா?","This receipt will be cancelled. The entry is not deleted - it is marked as cancelled. Continue?")))return;
+  var j=await ctCall("ctCancel",{receipt:rec,reason:r});
+  if(j&&j.ok){ctRefresh();ctm(TX("ரசீது ரத்து செய்யப்பட்டது.","Receipt cancelled."),"ok")}else ctm(errText(j),"bad");
+}
+function ctRefresh(){
+  if(CT.cur==="R"&&CT.fam&&CT.fam.family)ctOpenFam(CT.fam.family.id);
+  else if(CT.cur==="M")ctMine(CT.mine.off);else if(CT.cur==="P")rpLoad(CT.rpOff);
+}
+function ctPayItems(rows,canCancel){
+  return rows.length?rows.map(function(p){
+    var x=p.st==="Cancelled";
+    return'<div class="list-item"><b'+(x?' style="text-decoration:line-through;opacity:.7"':'')+'>'+esc(p.rec)+' · '+inr(p.amt)+'</b><span class="mut">'+esc(dmy(p.date))+' · '+whatL(p)+(p.payer&&!p.fam?' · '+esc(p.payer):'')+' · '+modeL(p.mode)+(p.ref?' · '+esc(p.ref):'')+' · '+esc(p.by)+'</span>'+
+      (x?'<div class="mut" style="color:var(--err)">'+TX("ரத்து செய்யப்பட்டது","Cancelled")+' · '+esc(p.cr)+' · '+esc(p.cb)+' · '+esc(dmyT(p.ca))+'</div>':'')+
+      '<button type="button" data-ct="rcpt" data-id="'+esc(p.rec)+'" style="'+BS+'">'+TX("ரசீது","Receipt")+'</button>'+
+      (canCancel&&!x?'<button type="button" data-ct="cancel" data-id="'+esc(p.rec)+'" style="'+BS+'">'+TX("ரத்து செய்","Cancel receipt")+'</button>':'')+'</div>';
+  }).join(""):'<p class="mut">'+TX("பதிவுகள் இல்லை.","No entries.")+'</p>';
+}
+
+/* ---------- receive payment ---------- */
+async function ctFind(off){
+  var q=$("ctQ").value.trim();CT.find={q:q,off:off||0};
+  if(q.length<2){$("ctRes").innerHTML='<p class="mut">'+TX("தேடுவதற்கு குறைந்தது 2 எழுத்துகளை உள்ளிடவும்.","Enter at least 2 characters to search.")+'</p>';$("ctPg").innerHTML="";return}
+  var j=await ctCall("ctFind",{q:q,off:CT.find.off});
+  if(!(j&&j.ok)){ctm(errText(j),"bad");return}
+  $("ctRes").innerHTML=j.rows.length?j.rows.map(function(f){return'<div class="list-item"><b>'+esc(f.head)+'</b><span class="mut">'+esc(f.anbiyam)+' · '+esc(f.phone)+(f.addr?' · '+esc(f.addr):'')+'</span><button type="button" data-ct="fam" data-id="'+esc(f.id)+'" style="'+BS+'">'+TX("பணம் பெறு / விவரம்","Receive payment / details")+'</button></div>'}).join(""):'<p class="mut">'+TX("பொருந்தும் குடும்பம் இல்லை.","No matching family.")+'</p>';
+  $("ctPg").innerHTML=pgH("f",j.off,j.limit,j.total);
+}
+async function ctOpenFam(id){
+  var j=await ctCall("ctFamily",{id:id});
+  if(!(j&&j.ok)){ctm(errText(j),"bad");return}
+  var same=CT.fam&&CT.fam.family&&CT.fam.family.id===id;
+  CT.fam=j;CT.donor=false;if(!same||!CT.req)CT.req=newToken();CT.plan="";
+  $("ctSearch").classList.add("hide");$("ctFam").classList.remove("hide");ctDrawFam();
+}
+function ctOpenDonor(){
+  CT.fam={family:null,sub:null,payments:[]};CT.donor=true;CT.req=newToken();CT.plan="";
+  $("ctSearch").classList.add("hide");$("ctFam").classList.remove("hide");ctDrawFam();
+}
+function ctBack(){CT.fam=null;CT.donor=false;$("ctFam").classList.add("hide");$("ctSearch").classList.remove("hide")}
+function ctSubCard(s){
+  var h='<div class="card"><h2>'+TX("சந்தா நிலை","Subscription status")+'</h2>';
+  if(!s.configured)return h+'<p class="msg bad">'+TX("சந்தா தொடக்க மாதம் அமைக்கப்படவில்லை. நிர்வாகி 'சந்தா அமைப்பு' பகுதியில் அமைக்க வேண்டும்.","The subscription start month is not set. The admin must set it under 'Subscription settings'.")+'</p></div>';
+  var b=s.balance;
+  h+='<div class="kpis">'+kpi(inr(s.rate),TX("மாதச் சந்தா","Monthly amount"))+kpi(inr(s.due),TX("இதுவரை செலுத்த வேண்டியது","Due so far"))+kpi(inr(s.paid),TX("செலுத்தியது","Paid"))+
+     kpi(inr(Math.abs(b)),b>0.004?TX("நிலுவைத் தொகை","Outstanding"):(b<-0.004?TX("முன்பணம் (மீதம்)","Advance (credit)"):TX("நிலுவை இல்லை","Nothing due")))+'</div>';
+  if(s.status!=="Active")h+='<p class="mut">'+TX("நிலை","Status")+' · '+(s.status==="Exempt"?TX("விலக்கு","Exempt"):TX("நிறுத்தப்பட்டது","Stopped"))+'</p>';
+  h+='<div class="fk2"><div class="hb"><span class="l">'+TX("தொடக்க மாதம்","Start month")+'</span><span></span><span class="n">'+esc(ymL(s.start))+'</span></div>'+
+     '<div class="hb"><span class="l">'+TX("எதுவரை செலுத்தப்பட்டுள்ளது","Paid up to")+'</span><span></span><span class="n">'+esc(ymL(s.paidUpTo))+'</span></div>'+
+     '<div class="hb"><span class="l">'+TX("அடுத்த நிலுவை மாதம்","Next due month")+'</span><span></span><span class="n">'+esc(ymL(s.nextDue))+'</span></div>'+
+     '<div class="hb"><span class="l">'+TX("நிலுவை மாதங்கள்","Months owing")+'</span><span></span><span class="n">'+s.owing+'</span></div>'+
+     (s.advMonths?'<div class="hb"><span class="l">'+TX("முன்பணம் (மாதங்கள்)","Advance (months)")+'</span><span></span><span class="n">'+s.advMonths+' · '+esc(ymL(s.advUntil))+'</span></div>':'')+'</div>';
+  var chips=(s.months||[]).slice(-24).map(function(m){
+    var c={paid:"paid",partial:"partial",due:"due",adv:"adv",advpart:"adv",free:"paid"}[m.st],sym={paid:"✔",partial:"◐",due:"✗",adv:"⏩",advpart:"◐",free:"–"}[m.st];
+    return'<span class="mth '+c+'" title="'+esc(inr(m.paid)+" / "+inr(m.rate))+'">'+esc(ymL(m.ym))+' '+sym+'</span>';
+  }).join("");
+  return h+'<details><summary>'+TX("மாதவாரி நிலை","Month-wise status")+'</summary><div>'+chips+'</div><div class="mut">'+TX("✔ செலுத்தப்பட்டது","✔ Paid")+' · '+TX("◐ பகுதி","◐ Part")+' · '+TX("✗ நிலுவை","✗ Due")+' · '+TX("⏩ முன்பணம்","⏩ Advance")+'</div></details></div>';
+}
+function ctSubAdmin(s,f){
+  if(CT.lvl<3||!f)return"";
+  function mo(id,v){return'<input id="'+id+'" type="month" value="'+esc(v||"")+'" style="width:auto">'}
+  return'<div class="card"><details><summary>'+TX("⚙ சந்தா அமைப்பு (நிர்வாகி)","⚙ Subscription settings (admin)")+'</summary>'+
+    '<div class="tools"><label style="margin:0">'+TX("தொடக்க மாதம்","Start month")+'</label>'+mo("sfStart",s.start)+'<select id="sfStatus" style="width:auto"><option value="Active"'+(s.status==="Active"?' selected':'')+'>'+TX("செயலில்","Active")+'</option><option value="Exempt"'+(s.status==="Exempt"?' selected':'')+'>'+TX("விலக்கு","Exempt")+'</option><option value="Stopped"'+(s.status==="Stopped"?' selected':'')+'>'+TX("நிறுத்தப்பட்டது","Stopped")+'</option></select>'+
+    '<label style="margin:0">'+TX("முடிவு மாதம்","End month")+'</label>'+mo("sfEnd",s.end)+'<button type="button" class="sm p" data-ct="subsave">'+TX("சேமி","Save")+'</button></div>'+
+    '<p class="mut">'+TX("தொடக்க மாதத்தைக் காலியாக விட்டால் பொதுவான தொடக்க மாதம் பயன்படுத்தப்படும். 'நிறுத்தப்பட்டது' எனில் முடிவு மாதம் தேவை.","Leave the start month empty to use the default start month. 'Stopped' needs an end month.")+'</p>'+
+    '<div class="tools"><label style="margin:0">'+TX("இந்தக் குடும்பத்துக்கு மட்டும் மாதத் தொகை","Monthly amount for this family only")+'</label>'+mo("sfRFrom","")+'<input id="sfRAmt" type="number" min="0" step="1" placeholder="₹" style="width:100px"><button type="button" class="sm" data-ct="famrate">'+TX("அமை","Set")+'</button></div>'+
+    '<p class="mut">'+TX("தேர்ந்தெடுத்த மாதம் முதல் மட்டுமே பொருந்தும்; முந்தைய மாதங்களின் நிலுவை மாறாது.","Applies only from the chosen month; earlier months are not changed.")+(s.custom?' · '+TX("இந்தக் குடும்பத்துக்குச் சிறப்புத் தொகை உள்ளது.","This family has a custom amount."):'')+'</p></details></div>';
+}
+function ctPayForm(){
+  var funds=CT.init.funds,st=CT.init.settings,lvl=CT.lvl,donor=CT.donor,s=CT.fam.sub;
+  var nf='style="width:auto"';
+  return'<div class="card" id="ctPayCard"><h2>'+TX("பணம் பெறு","Receive payment")+'</h2><div id="ptMsg"></div>'+
+    (donor?'<label for="ptDonor">'+TX("நன்கொடையாளர் பெயர்","Donor name")+'</label><input id="ptDonor" autocomplete="off"><label for="ptDonorPh">'+TX("அலைபேசி எண் (விரும்பினால்)","Mobile number (optional)")+'</label><input id="ptDonorPh" type="tel" inputmode="numeric">':
+     '<div class="tools"><label style="margin:0"><input type="radio" name="ptype" value="Subscription" checked '+nf+'> <span>'+TX("சந்தா","Subscription")+'</span></label><label style="margin:0"><input type="radio" name="ptype" value="Fund" '+nf+'> <span>'+TX("நிதி / காணிக்கை","Fund / offering")+'</span></label></div>')+
+    (donor?'':'<div id="ptSub"><div class="mut">'+TX("விரைவுத் தொகை:","Quick amounts:")+'</div><div class="tools">'+
+      [1,3,6,12].map(function(n){return'<button type="button" class="sm" data-ct="plan" data-n="'+n+'">'+(n===1?TX("1 மாதம்","1 month"):TX(n+" மாதங்கள்",n+" months"))+'</button>'}).join("")+
+      '<button type="button" class="sm" data-ct="plan" data-n="due">'+TX("முழு நிலுவை","Full dues")+'</button></div></div>')+
+    '<div id="ptFund" class="'+(donor?'':'hide')+'"><label for="ptFundSel">'+TX("நிதி","Fund")+'</label><select id="ptFundSel"><option value="">'+TX("தேர்வு செய்க","Select")+'</option>'+funds.map(function(f){return'<option value="'+esc(f.id)+'">'+esc(f.name)+'</option>'}).join("")+'</select></div>'+
+    '<label for="ptAmt">'+TX("தொகை (₹)","Amount (₹)")+'</label><input id="ptAmt" type="number" inputmode="decimal" min="1" step="0.01">'+
+    '<label for="ptMode">'+TX("செலுத்தும் முறை","Mode")+'</label><select id="ptMode"><option value="Cash">'+TX("ரொக்கம்","Cash")+'</option><option value="UPI">UPI</option><option value="Cheque">'+TX("காசோலை","Cheque")+'</option></select>'+
+    '<div id="ptRefBox" class="hide"><label for="ptRef" id="ptRefL"></label><input id="ptRef" autocomplete="off"><div id="ptUpi" class="mut hide"></div><label for="ptRef2" id="ptRef2L" class="hide"></label><input id="ptRef2" class="hide" autocomplete="off"></div>'+
+    '<label for="ptDate">'+TX("பெற்ற தேதி","Date received")+'</label><input id="ptDate" type="date" value="'+ctDay(0)+'" max="'+ctDay(0)+'" min="'+ctDay(lvl>=2?400:7)+'" '+nf+'>'+
+    '<label for="ptNote">'+TX("குறிப்பு (விரும்பினால்)","Note (optional)")+'</label><input id="ptNote" maxlength="200" autocomplete="off">'+
+    '<button type="button" id="ptGo" class="p" style="width:100%;margin-top:12px" data-ct="pay">'+TX("ரசீது உருவாக்கு","Create receipt")+'</button></div>';
+}
+function ctDrawFam(){
+  var j=CT.fam,f=j.family,s=j.sub,h='';
+  h+='<div class="card"><div class="hd"><h2>'+(f?esc(f.head):TX("நன்கொடை (பட்டியலில் இல்லாதவர்)","Donation (not in the family list)"))+'</h2><button type="button" class="sm" data-ct="back">'+TX("← பட்டியலுக்குத் திரும்பு","← Back to the list")+'</button></div>'+
+     (f?'<div class="mut">'+esc(f.anbiyam)+' · '+esc(f.phone)+(f.addr?' · '+esc(f.addr):'')+'</div>':'')+'</div>';
+  if(f){h+=ctSubCard(s)+ctSubAdmin(s,f)}
+  h+=ctPayForm();
+  if(f)h+='<div class="card"><h2>'+TX("இந்தக் குடும்பத்தின் ரசீதுகள்","This family's receipts")+'</h2>'+ctPayItems(j.payments,CT.lvl>=2)+'</div>';
+  $("ctFam").innerHTML=h;ctModeUI();window.scrollTo(0,0);
+}
+function ctModeUI(){
+  var m=$("ptMode");if(!m)return;m=m.value;
+  $("ptRefBox").classList.toggle("hide",m==="Cash");
+  $("ptRefL").textContent=m==="UPI"?TX("UPI பரிவர்த்தனை எண் (UTR)","UPI transaction number (UTR)"):TX("காசோலை எண்","Cheque number");
+  $("ptRef").value="";$("ptRef2").value="";
+  $("ptRef2L").classList.toggle("hide",m!=="Cheque");$("ptRef2").classList.toggle("hide",m!=="Cheque");
+  $("ptRef2L").textContent=TX("வங்கி / காசோலை தேதி","Bank / cheque date");
+  var u=$("ptUpi"),id=CT.init&&CT.init.settings.upiId;u.classList.toggle("hide",!(m==="UPI"&&id));u.textContent=m==="UPI"&&id?TX("தேவாலய UPI","Church UPI")+" · "+id:"";
+}
+function ctTypeUI(){
+  var t=document.querySelector('input[name=ptype]:checked');if(!t)return;
+  $("ptSub").classList.toggle("hide",t.value!=="Subscription");$("ptFund").classList.toggle("hide",t.value!=="Fund");
+}
+function ctPlan(n){
+  var s=CT.fam.sub;
+  if(!s||!s.configured||!(s.rate>0)){ptm(TX("மாதச் சந்தா தொகை / தொடக்க மாதம் அமைக்கப்படவில்லை.","The monthly amount / start month is not set."),"bad");return}
+  var map={"1":"Monthly","3":"Quarterly","6":"Half-yearly","12":"Annual"};
+  if(n==="due"){var b=Math.max(0,s.balance);if(b<=0){ptm(TX("நிலுவை இல்லை.","Nothing is due."),"ok");return}$("ptAmt").value=b;CT.plan="Custom"}
+  else{$("ptAmt").value=s.rate*Number(n);CT.plan=map[n]}
+  ptm("");
+}
+async function ctPay(){
+  var f=CT.fam.family,type=CT.donor?"Fund":(document.querySelector('input[name=ptype]:checked')||{}).value||"Subscription";
+  var amt=Number($("ptAmt").value),mode=$("ptMode").value,ref=$("ptRef").value.trim(),ref2=$("ptRef2").value.trim(),fund=$("ptFundSel").value;
+  if(CT.donor&&$("ptDonor").value.trim().length<2){ptm(errText({error:"donor"}),"bad");return}
+  if(type==="Fund"&&!fund){ptm(errText({error:"fund"}),"bad");return}
+  if(!(amt>0)){ptm(errText({error:"amount"}),"bad");return}
+  if(mode==="UPI"&&!/^[A-Za-z0-9]{6,40}$/.test(ref)||mode==="Cheque"&&!/^[0-9]{4,10}$/.test(ref)){ptm(errText({error:"ref"}),"bad");return}
+  var fo=CT.init.funds.filter(function(x){return x.id===fund})[0],who=f?f.head:$("ptDonor").value.trim();
+  if(!confirm([TX("ரசீது உருவாக்கவா?","Create the receipt?"),who,(type==="Fund"?(fo?fo.name:""):TX("சந்தா","Subscription"))+" · "+inr(amt)+" · "+modeL(mode)+(ref?" · "+ref:"")].map(tx).join("\n")))return;
+  var j=await ctCall("ctPay",{reqId:CT.req,famId:f?f.id:"",type:type,fundId:fund,amount:amt,mode:mode,ref:ref,refExtra:ref2,plan:type==="Subscription"?(CT.plan||"Custom"):"",
+    note:$("ptNote").value.trim(),payDate:$("ptDate").value,donor:CT.donor?$("ptDonor").value.trim():"",donorPhone:CT.donor?$("ptDonorPh").value.trim():""});
+  if(!(j&&j.ok)){ptm(errText(j),"bad");return}
+  CT.req=newToken();
+  var after="",phone=f?f.phone:(CT.donor?$("ptDonorPh").value:"");
+  if(f){var fj=await ctCall("ctFamily",{id:f.id});if(fj&&fj.ok){CT.fam=fj;ctDrawFam();
+    if(type==="Subscription"){var s=fj.sub;after='<div class="msg ok" style="margin:10px 0 0">'+TX("தற்போதைய நிலை","Current status")+' · '+(s.balance>0.004?TX("நிலுவை","Outstanding")+' '+inr(s.balance):(s.balance<-0.004?TX("முன்பணம் (மீதம்)","Advance (credit)")+' '+inr(-s.balance):TX("நிலுவை இல்லை","Nothing due")))+' · '+TX("எதுவரை செலுத்தப்பட்டுள்ளது","Paid up to")+' '+esc(ymL(s.paidUpTo))+'</div>'}}}
+  else ctOpenDonor();
+  ctShowRc(j.receipt,phone,after);
+}
+
+/* ---------- my collection ---------- */
+async function ctMine(off){
+  CT.mine.off=off||0;
+  var j=await ctCall("ctMine",{from:$("mnFrom").value||ctDay(0),to:$("mnTo").value||ctDay(0),off:CT.mine.off});
+  if(!(j&&j.ok)){ctm(errText(j),"bad");return}
+  $("mnBody").innerHTML='<div class="kpis">'+kpi(inr(j.sum),TX("மொத்தம்","Total"))+kpi(inr(j.cash),TX("ரொக்கம்","Cash"))+kpi(inr(j.upi),"UPI")+kpi(inr(j.cheque),TX("காசோலை","Cheque"))+kpi(j.count,TX("ரசீதுகள்","Receipts"))+(j.cancelled?kpi(j.cancelled,TX("ரத்து செய்யப்பட்டவை","Cancelled")):'')+'</div>'+
+    '<div class="card">'+ctPayItems(j.rows,CT.lvl>=2)+pgH("m",j.off,j.limit,j.total)+'</div>';
+}
+
+/* ---------- reports ---------- */
+function rpShow(){
+  var k=CT.rp;[].forEach.call($("rpFil").querySelectorAll("[data-for]"),function(e){e.classList.toggle("hide",e.getAttribute("data-for").split(" ").indexOf(k)<0)});
+  [].forEach.call($("rpTabs").querySelectorAll("button"),function(b){b.classList.toggle("on",b.dataset.v===k)});
+  rpLoad(0);
+}
+function rpPayload(){
+  return{kind:CT.rp,from:$("rpFrom").value,to:$("rpTo").value,mode:$("rpMode").value,type:$("rpType").value,anbId:$("rpAnb").value,q:$("rpQ").value.trim(),owing:$("rpOwe").value==="all"?"all":true};
+}
+async function rpLoad(off){
+  CT.rpOff=off||0;var p=rpPayload();p.off=CT.rpOff;
+  var j=await ctCall("ctReport",p);
+  if(!(j&&j.ok)){ctm(errText(j),"bad");return}
+  var h="",k=CT.rp;
+  if(k==="summary"){
+    h='<div class="kpis">'+kpi(inr(j.sum),TX("மொத்த வசூல்","Total collected"))+kpi(j.count,TX("ரசீதுகள்","Receipts"))+kpi(inr(j.cash),TX("ரொக்கம்","Cash"))+kpi(inr(j.upi),"UPI")+kpi(inr(j.cheque),TX("காசோலை","Cheque"))+kpi(j.cancelled+" · "+inr(j.cancelledAmt),TX("ரத்து செய்யப்பட்டவை","Cancelled"))+'</div>'+
+      '<div class="card"><h2>'+TX("நிதி / சந்தா வாரியாக","By fund / subscription")+'</h2>'+(j.byFund.length?ctTbl([TX("எதற்காக","For"),TX("ரசீதுகள்","Receipts"),TX("தொகை","Amount")],j.byFund.map(function(x){return[x.sub?TX("சந்தா","Subscription"):esc(x.name),x.n,inr(x.amt)]}),[1,2]):'<p class="mut">'+TX("பதிவுகள் இல்லை.","No entries.")+'</p>')+'</div>'+
+      '<div class="card"><h2>'+TX("வசூலித்தவர் வாரியாக","By collector")+'</h2>'+(j.byCollector.length?ctTbl([TX("பெற்றவர்","Received by"),TX("ரசீதுகள்","Receipts"),TX("தொகை","Amount")],j.byCollector.map(function(x){return[esc(x.name),x.n,inr(x.amt)]}),[1,2]):'<p class="mut">'+TX("பதிவுகள் இல்லை.","No entries.")+'</p>')+'</div>'+
+      '<div class="card"><h2>'+TX("நாள் வாரியாக","By day")+'</h2>'+(j.byDay.length?ctTbl([TX("தேதி","Date"),TX("ரசீதுகள்","Receipts"),TX("தொகை","Amount")],j.byDay.map(function(x){return[esc(dmy(x.date)),x.n,inr(x.amt)]}),[1,2]):'<p class="mut">'+TX("பதிவுகள் இல்லை.","No entries.")+'</p>')+'</div>';
+  }else if(k==="dues"){
+    h=(j.defaultStart?'':'<p class="msg bad">'+TX("சந்தா தொடக்க மாதம் அமைக்கப்படவில்லை. 'சந்தா அமைப்பு' பகுதியில் அமைக்கவும்.","The subscription start month is not set. Set it under 'Subscription settings'.")+'</p>')+
+      '<div class="kpis">'+kpi(j.nOwe+" / "+j.families,TX("நிலுவை உள்ள குடும்பங்கள்","Families owing"))+kpi(inr(j.owe),TX("மொத்த நிலுவை","Total outstanding"))+kpi(j.nAdv,TX("முன்பணம் செலுத்தியவர்கள்","Paid in advance"))+kpi(inr(j.adv),TX("மொத்த முன்பணம்","Total advance"))+'</div>'+
+      '<div class="card">'+(j.rows.length?ctTbl([TX("அன்பியம்","Anbiyam"),TX("குடும்பத் தலைவர்","Head of family"),TX("அலைபேசி எண்","Mobile number"),TX("செலுத்த வேண்டியது","Due"),TX("செலுத்தியது","Paid"),TX("நிலுவை","Balance"),TX("நிலுவை மாதங்கள்","Months owing"),TX("எதுவரை","Paid up to"),""],
+        j.rows.map(function(r){return[esc(r.anbiyam),esc(r.head),esc(r.phone),inr(r.due),inr(r.paid),'<b>'+(r.balance>0.004?inr(r.balance):(r.balance<-0.004?'−'+inr(-r.balance):'0'))+'</b>',r.owing,esc(ymL(r.paidUpTo)),'<button type="button" class="sm" data-ct="openfam" data-id="'+esc(r.id)+'">'+TX("திற","Open")+'</button>']}),[3,4,5,6])+pgH("r",j.off,j.limit,j.total):'<p class="mut">'+TX("நிலுவை உள்ள குடும்பங்கள் இல்லை.","No families with dues.")+'</p>')+'</div>';
+  }else if(k==="funds"){
+    h='<div class="card">'+j.funds.map(function(f){var pc=f.target?Math.min(100,Math.round(f.collected*100/f.target)):0;
+      return'<div class="hb"><span class="l">'+esc(f.name)+(f.active?'':' · <span class="vbadge off">'+TX("மூடப்பட்டது","Closed")+'</span>')+'</span><span class="t"><i class="b1" style="width:'+pc+'%"></i></span><span class="n">'+inr(f.collected)+(f.target?' / '+inr(f.target)+' · '+pc+'%':'')+'</span></div>'}).join("")+'</div>';
+  }else{
+    h='<div class="kpis">'+kpi(inr(j.sum),TX("மொத்தம்","Total"))+kpi(j.count,TX("ரசீதுகள்","Receipts"))+'</div><div class="card">'+ctPayItems(j.rows,CT.lvl>=2)+pgH("r",j.off,j.limit,j.total)+'</div>';
+  }
+  $("rpBody").innerHTML=h;
+}
+async function rpCsv(){
+  var p=rpPayload();var j=await ctCall("ctExport",p);
+  if(!(j&&j.ok)){ctm(errText(j),"bad");return}
+  rowsCsv(j.headers,j.rows,"contributions-"+CT.rp+"-"+ctDay(0)+".csv");
+}
+
+/* ---------- funds (admin) ---------- */
+async function ctFunds(){
+  var j=await ctCall("ctReport",{kind:"funds"});
+  if(!(j&&j.ok)){ctm(errText(j),"bad");return}
+  regFunds(j.funds);
+  $("ctF").innerHTML='<div class="card"><h2>'+TX("நிதிகள்","Funds")+'</h2>'+j.funds.map(function(f){var pc=f.target?Math.min(100,Math.round(f.collected*100/f.target)):0;
+    return'<div class="list-item"><b>'+esc(f.name)+(f.en?' <span class="mut">'+esc(f.en)+'</span>':'')+'</b><div class="hb"><span class="l">'+inr(f.collected)+(f.target?' / '+inr(f.target):'')+'</span><span class="t"><i class="b1" style="width:'+pc+'%"></i></span><span class="n"><span class="vbadge '+(f.active?'on':'off')+'">'+(f.active?TX("செயலில்","Active"):TX("மூடப்பட்டது","Closed"))+'</span></span></div>'+
+      '<button type="button" data-ct="fedit" data-id="'+esc(f.id)+'" data-n="'+esc(f.name)+'" data-e="'+esc(f.en)+'" data-t="'+f.target+'" data-o="'+esc(f.notes)+'" style="'+BS+'">'+TX("திருத்து","Edit")+'</button>'+
+      '<button type="button" data-ct="ftog" data-id="'+esc(f.id)+'" data-v="'+(f.active?0:1)+'" style="'+BS+'">'+(f.active?TX("மூடு","Close"):TX("மீண்டும் திற","Reopen"))+'</button></div>'}).join("")+'</div>'+
+    '<div class="card"><h2 id="cfH">'+TX("புதிய நிதி","New fund")+'</h2><input type="hidden" id="cfId"><label for="cfName">'+TX("நிதியின் பெயர்","Fund name")+'</label><input id="cfName" autocomplete="off"><label for="cfEn">'+TX("ஆங்கிலப் பெயர் (விரும்பினால்)","English name (optional)")+'</label><input id="cfEn" autocomplete="off">'+
+    '<label for="cfTarget">'+TX("இலக்குத் தொகை ₹ (விரும்பினால்)","Target amount ₹ (optional)")+'</label><input id="cfTarget" type="number" min="0" step="1"><label for="cfNotes">'+TX("குறிப்பு (விரும்பினால்)","Notes (optional)")+'</label><input id="cfNotes" autocomplete="off">'+
+    '<div class="tools" style="margin-top:12px"><button type="button" class="p" data-ct="fsave">'+TX("சேமி","Save")+'</button><button type="button" data-ct="fnew">'+TX("புதியது","New")+'</button></div></div>';
+}
+function cfFill(id,n,e,t,o){$("cfId").value=id||"";$("cfName").value=n||"";$("cfEn").value=e||"";$("cfTarget").value=t&&Number(t)?t:"";$("cfNotes").value=o||"";$("cfH").textContent=id?TX("நிதியைத் திருத்து","Edit fund"):TX("புதிய நிதி","New fund")}
+
+/* ---------- settings (admin) ---------- */
+function ctSettingsUI(){
+  var st=CT.init.settings,rs=CT.init.rates||[];
+  $("ctS").innerHTML='<div class="card"><h2>'+TX("பொது அமைப்புகள்","General settings")+'</h2>'+
+    '<label for="csStart">'+TX("பொதுவான சந்தா தொடக்க மாதம்","Default subscription start month")+'</label><input id="csStart" type="month" value="'+esc(st.defaultStart||"")+'" style="width:auto">'+
+    '<p class="mut">'+TX("ஒவ்வொரு குடும்பத்துக்கும் தனியாக அமைக்காவிட்டால் இந்த மாதம் முதல் சந்தா கணக்கிடப்படும்.","Subscription is counted from this month unless a family has its own start month.")+'</p>'+
+    '<label for="csParish">'+TX("ரசீதில் வரும் பங்கின் பெயர்","Parish name shown on receipts")+'</label><input id="csParish" value="'+esc(st.parishName||"")+'" maxlength="80">'+
+    '<label for="csUpi">'+TX("தேவாலய UPI முகவரி","Church UPI ID")+'</label><input id="csUpi" value="'+esc(st.upiId||"")+'" maxlength="60" autocomplete="off">'+
+    '<button type="button" class="p" data-ct="setsave" style="width:100%;margin-top:12px">'+TX("சேமி","Save")+'</button></div>'+
+    '<div class="card"><h2>'+TX("மாதச் சந்தா தொகை (எல்லாக் குடும்பங்களுக்கும்)","Monthly subscription amount (all families)")+'</h2>'+
+    (rs.length?ctTbl([TX("மாதம் முதல்","From month"),TX("தொகை","Amount")],rs.map(function(r){return[esc(ymL(r.from)),inr(r.amt)]}),[1]):'<p class="msg bad">'+TX("இன்னும் தொகை அமைக்கப்படவில்லை.","No amount has been set yet.")+'</p>')+
+    '<div class="tools" style="margin-top:10px"><label style="margin:0">'+TX("மாதம் முதல்","From month")+'</label><input id="crFrom" type="month" style="width:auto"><input id="crAmt" type="number" min="0" step="1" placeholder="₹" style="width:110px"><button type="button" class="p" data-ct="ratesave">'+TX("சேர் / திருத்து","Add / correct")+'</button></div>'+
+    '<p class="mut">'+TX("புதிய தொகை குறிப்பிட்ட மாதம் முதல் மட்டுமே பொருந்தும்; கடந்த மாதங்களின் நிலுவை மாறாது. அதே மாதத்துக்கு மீண்டும் உள்ளிட்டால் தொகை திருத்தப்படும்.","A new amount applies only from the chosen month; past dues do not change. Entering the same month again corrects its amount.")+'</p></div>';
+}
+async function ctDo(j,okMsg,then){if(j&&j.ok){ctm(okMsg,"ok");if(then)then()}else ctm(errText(j),"bad")}
+
+/* ---------- events ---------- */
+$("vC").addEventListener("click",function(e){
+  var b=e.target.closest("[data-ct]");if(!b||b.disabled)return;
+  var a=b.dataset.ct,id=b.dataset.id,fam=CT.fam&&CT.fam.family;
+  if(a==="tab")ctSub(b.dataset.v);
+  else if(a==="find")ctFind(0);else if(a==="fprev")ctFind(Math.max(0,CT.find.off-10));else if(a==="fnext")ctFind(CT.find.off+10);
+  else if(a==="fam")ctOpenFam(id);else if(a==="back")ctBack();else if(a==="donor")ctOpenDonor();
+  else if(a==="plan")ctPlan(b.dataset.n);else if(a==="pay")ctPay();
+  else if(a==="rcpt")ctReceipt(id);else if(a==="cancel")ctCancel(id);
+  else if(a==="mine")ctMine(0);else if(a==="mprev")ctMine(Math.max(0,CT.mine.off-10));else if(a==="mnext")ctMine(CT.mine.off+10);
+  else if(a==="rp"){CT.rp=b.dataset.v;rpShow()}else if(a==="rpgo")rpLoad(0);else if(a==="rpcsv")rpCsv();
+  else if(a==="rprev")rpLoad(Math.max(0,CT.rpOff-10));else if(a==="rpnext")rpLoad(CT.rpOff+10);
+  else if(a==="openfam"){ctSub("R");ctOpenFam(id)}
+  else if(a==="fedit"){cfFill(id,b.dataset.n,b.dataset.e,b.dataset.t,b.dataset.o);$("cfName").focus()}else if(a==="fnew")cfFill();
+  else if(a==="fsave"){ctCall("ctFundSave",{id:$("cfId").value,name:$("cfName").value,en:$("cfEn").value,target:$("cfTarget").value,notes:$("cfNotes").value}).then(function(j){ctDo(j,TX("நிதி சேமிக்கப்பட்டது.","Fund saved."),function(){ctOpen()})})}
+  else if(a==="ftog"){ctCall("ctFundStatus",{id:id,active:b.dataset.v==="1"}).then(function(j){ctDo(j,TX("நிதியின் நிலை மாற்றப்பட்டது.","Fund status changed."),function(){ctOpen()})})}
+  else if(a==="setsave"){ctCall("ctSetting",{defaultStart:$("csStart").value,parishName:$("csParish").value,upiId:$("csUpi").value}).then(function(j){ctDo(j,TX("அமைப்புகள் சேமிக்கப்பட்டன.","Settings saved."),function(){ctOpen()})})}
+  else if(a==="ratesave"){ctCall("ctRateSave",{scope:"ALL",from:$("crFrom").value,amount:$("crAmt").value}).then(function(j){ctDo(j,TX("தொகை சேமிக்கப்பட்டது.","Amount saved."),function(){ctOpen()})})}
+  else if(a==="subsave"&&fam){ctCall("ctSubSave",{famId:fam.id,start:$("sfStart").value,status:$("sfStatus").value,end:$("sfEnd").value}).then(function(j){ctDo(j,TX("சந்தா அமைப்பு சேமிக்கப்பட்டது.","Subscription settings saved."),function(){ctOpenFam(fam.id)})})}
+  else if(a==="famrate"&&fam){ctCall("ctRateSave",{scope:fam.id,from:$("sfRFrom").value,amount:$("sfRAmt").value}).then(function(j){ctDo(j,TX("தொகை சேமிக்கப்பட்டது.","Amount saved."),function(){ctOpenFam(fam.id)})})}
+});
+$("vC").addEventListener("change",function(e){if(e.target.id==="ptMode")ctModeUI();else if(e.target.name==="ptype")ctTypeUI()});
+$("vC").addEventListener("input",function(e){if(e.target.id==="ptAmt")CT.plan="Custom"});
+$("vC").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="ctQ")ctFind(0)});
+$("tC").onclick=function(){tab("C");ctOpen()};
+$("rcClose").onclick=ctRcClose;$("rcPrint").onclick=ctRcPrint;$("rcWa").onclick=ctRcWa;
+$("rcm").onclick=function(e){if(e.target===this)ctRcClose()};
+async function vContrib(sel){
+  var j=await call({action:"volContrib",admin:adminPw,mobile:sel.dataset.vct,level:sel.value});
+  if(j&&j.ok)vm(TX("பங்களிப்புகள் அணுகல் மாற்றப்பட்டது.","Contributions access changed."),"ok");else vm(errText(j),"bad");
+  loadVols();
+}
+$("vList").addEventListener("change",function(e){var s=e.target.closest("select[data-vct]");if(s)vContrib(s)});
+/* error texts for the new module */
+function ctOpts(cur){return[["None",TX("அணுகல் இல்லை","No access")],["Entry",TX("பணம் பெறுதல் மட்டும்","Receive payments only")],["Manager",TX("பணம் பெறுதல் + அறிக்கைகள் + ரத்து","Receive payments + reports + cancel")]].map(function(x){return'<option value="'+x[0]+'"'+(cur===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join("")}
+TX("பங்களிப்புகள் அணுகல்","Contributions access");TX("WhatsApp எண்","WhatsApp number");TX("💰 பங்களிப்புகள்","💰 Contributions");TX("அச்சிடு / PDF","Print / PDF");TX("மூடு","Close");
+$("vCt").innerHTML=ctOpts("None");
+
+addMember();renderList();setLang(LANG);if(!cardBoot())boot();
 </script>
 </body>
 </html>
